@@ -9,6 +9,7 @@
 namespace Strava_Centurion
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.Xml;
 
@@ -17,6 +18,11 @@ namespace Strava_Centurion
     /// </summary>
     public class TcxPoint
     {
+        /// <summary>
+        /// Mean radius of the earth in m.
+        /// </summary>
+        private const double RadiusOfEarth = 6378100.0;
+
         #region XPath Constants for parsing node.
         /// <summary>
         /// Xpath expression to locate the date and time in a track point.
@@ -87,11 +93,6 @@ namespace Strava_Centurion
         #endregion
 
         /// <summary>
-        /// Indicates if the TPX had source distance.
-        /// </summary>
-        private readonly bool noDistance = true;
-
-        /// <summary>
         /// The power in watts.
         /// </summary>
         private double powerInWatts;
@@ -112,6 +113,8 @@ namespace Strava_Centurion
             double dble;
             this.nsmgr = manager;
             this.sourceNode = node;
+            this.TotalDistanceInMetres = double.NaN;
+
             if (DateTime.TryParse(this.SafeGetNodeText(node, DatetimeXpath), out dateTime))
             {
                 this.DateTime = dateTime;
@@ -126,12 +129,7 @@ namespace Strava_Centurion
 
             if (double.TryParse(this.SafeGetNodeText(node, DistanceXpath), out dble))
             {
-                this.DistanceInMetres = dble;
-                this.noDistance = false;
-            }
-            else
-            {
-                this.noDistance = true;
+                this.TotalDistanceInMetres = dble;
             }
 
             this.HeartrateInBpm = this.SafeGetNodeText(node, HeartrateXpath);
@@ -199,7 +197,7 @@ namespace Strava_Centurion
         /// <summary>
         /// Gets the distance in meters.
         /// </summary>
-        public double DistanceInMetres { get; private set; }
+        public double TotalDistanceInMetres { get; private set; }
 
         /// <summary>
         /// Gets or sets the date and time that the point was recorded
@@ -216,17 +214,45 @@ namespace Strava_Centurion
         /// </summary>
         public double LatitudeInDegrees { get; set; }
 
-        /// <summary>
-        /// Gets a value indicating whether the TPX had source distance.
-        /// </summary>
-        public bool NoDistance
-        {
-            get
-            {
-                return this.noDistance;
-            }
-        }
         #endregion
+
+        /// <summary>
+        /// Fetch or calculate the distance between this point and another.
+        /// </summary>
+        /// <param name="other">
+        /// The other point.
+        /// </param>
+        /// <returns>
+        /// The distance in meters between the two points.
+        /// </returns>
+        public double DistanceInMetresToPoint(TcxPoint other)
+        {
+            double result;
+
+            if (double.IsNaN(this.TotalDistanceInMetres) || double.IsNaN(other.TotalDistanceInMetres))
+            {
+                var ascent = this.AscentInMetresToPoint(other);
+                var haversine = this.HaversineDistanceInMetresToPoint(other);
+
+                result = Math.Sqrt((ascent * ascent) + (haversine * haversine));
+            }
+            else
+            {
+                result = other.TotalDistanceInMetres - this.TotalDistanceInMetres;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Calculates the ascent from this point to the point specified.
+        /// </summary>
+        /// <param name="other">The other point.</param>
+        /// <returns>The ascent in meters.</returns>
+        public double AscentInMetresToPoint(TcxPoint other)
+        {
+            return other.AltitudeInMetres - this.AltitudeInMetres;
+        }
 
         /// <summary>
         /// Get's the contents of a node from a parent node via Xpath.
@@ -236,14 +262,46 @@ namespace Strava_Centurion
         /// <returns>The content of the node.</returns>
         private string SafeGetNodeText(XmlNode node, string xpath)
         {
-            string ret = string.Empty;
-            XmlNode subNode = node.SelectSingleNode(xpath, this.nsmgr);
+            var ret = string.Empty;
+            var subNode = node.SelectSingleNode(xpath, this.nsmgr);
+
             if (subNode != null)
             {
                 ret = subNode.InnerText;
             }
 
             return ret;
+        }
+
+        /// <summary>
+        /// Calculates the haversine distance in meters between this point and another using latitude and longitude:
+        /// <a href="http://www.movable-type.co.uk/scripts/latlong.html">Reference</a>
+        /// </summary>
+        /// <param name="other">The other point.</param>
+        /// <returns>Double, the distance in meters as the crow flies.</returns>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
+        private double HaversineDistanceInMetresToPoint(TcxPoint other)
+        {
+            var differenceInLat = this.ToRad(other.LatitudeInDegrees - this.LatitudeInDegrees);
+            var differenceInLon = this.ToRad(other.LongitudeInDegrees - this.LongitudeInDegrees);
+
+            var a = (Math.Sin(differenceInLat / 2) * Math.Sin(differenceInLat / 2)) +
+                    (Math.Cos(this.ToRad(this.LatitudeInDegrees)) * Math.Cos(this.ToRad(other.LatitudeInDegrees))
+                        * Math.Sin(differenceInLon / 2) * Math.Sin(differenceInLon / 2));
+            var c = 2 * Math.Asin(Math.Min(1, Math.Sqrt(a)));
+            var d = RadiusOfEarth * c;
+
+            return d;
+        }
+
+        /// <summary>
+        /// Convert degrees to radians.
+        /// </summary>
+        /// <param name="degrees">Degrees to convert.</param>
+        /// <returns>Angle in radians.</returns>
+        private double ToRad(double degrees)
+        {
+            return Math.PI * degrees / 180.0;
         }
 
         /// <summary>

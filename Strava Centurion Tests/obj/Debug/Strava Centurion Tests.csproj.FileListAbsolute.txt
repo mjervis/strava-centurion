@@ -1,0 +1,11 @@
+C:\Users\James\Documents\GitHub\strava-centurion\Strava Centurion Tests\bin\Debug\Strava Centurion Tests.dll
+C:\Users\James\Documents\GitHub\strava-centurion\Strava Centurion Tests\bin\Debug\Strava Centurion Tests.pdb
+C:\Users\James\Documents\GitHub\strava-centurion\Strava Centurion Tests\bin\Debug\nunit.framework.dll
+C:\Users\James\Documents\GitHub\strava-centurion\Strava Centurion Tests\bin\Debug\Rhino.Mocks.dll
+C:\Users\James\Documents\GitHub\strava-centurion\Strava Centurion Tests\bin\Debug\Strava Centurion.exe
+C:\Users\James\Documents\GitHub\strava-centurion\Strava Centurion Tests\bin\Debug\Strava Centurion.pdb
+C:\Users\James\Documents\GitHub\strava-centurion\Strava Centurion Tests\bin\Debug\nunit.framework.xml
+C:\Users\James\Documents\GitHub\strava-centurion\Strava Centurion Tests\bin\Debug\Rhino.Mocks.xml
+C:\Users\James\Documents\GitHub\strava-centurion\Strava Centurion Tests\obj\Debug\Strava Centurion Tests.csprojResolveAssemblyReference.cache
+C:\Users\James\Documents\GitHub\strava-centurion\Strava Centurion Tests\obj\Debug\Strava Centurion Tests.dll
+C:\Users\James\Documents\GitHub\strava-centurion\Strava Centurion Tests\obj\Debug\Strava Centurion Tests.pdb

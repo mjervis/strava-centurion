@@ -20,11 +20,6 @@ namespace Strava_Centurion
         #region Fields and constants.
 
         /// <summary>
-        /// Mean radius of the earth in m.
-        /// </summary>
-        private const double RadiusOfEarth = 6378100.0;
-
-        /// <summary>
         /// The reality in which we exist.
         /// </summary>
         private readonly Reality reality;
@@ -167,7 +162,7 @@ namespace Strava_Centurion
         private void GeneratePower(TcxPoint start, TcxPoint end)
         {
             // Distance is sometimes literal, and sometimes we need to trig it, depending on source data..
-            double distance = this.GetDistance(start, end);
+            double distance = start.DistanceInMetresToPoint(end);
             double time = end.DateTime.Subtract(start.DateTime).TotalSeconds;
             double speed = distance / time;
             if (end.CadenceInRpm == "0")
@@ -179,7 +174,7 @@ namespace Strava_Centurion
             }
             else
             {
-                double ascent = end.AltitudeInMetres - start.AltitudeInMetres;
+                var ascent = start.AscentInMetresToPoint(end);
 
                 /*
                  * Trig:
@@ -192,6 +187,8 @@ namespace Strava_Centurion
                  *  sqrt(h^2 - y^2) = x
                  *  h is distance, y is acent
                  */
+
+                // TODO: Mike is this right?  This seems to be duplicated in TcxPoint.DistanceInMetresToPoint
                 double x = Math.Sqrt((distance * distance) - (ascent * ascent));
                 double gradient = ascent / x;
 
@@ -200,80 +197,6 @@ namespace Strava_Centurion
                 end.PowerInWatts = this.TotalPower(speed, end.AltitudeInMetres, gradient, time, this.previousSpeed);
                 this.previousSpeed = speed;
             }
-        }
-
-        /// <summary>
-        /// Fetch or calculate the distance between two points.
-        /// </summary>
-        /// <param name="start">
-        /// The start point.
-        /// </param>
-        /// <param name="end">
-        /// The end point
-        /// </param>
-        /// <returns>
-        /// Distance in m between two points.
-        /// </returns>
-        private double GetDistance(TcxPoint start, TcxPoint end)
-        {
-            double ret;
-            if (end.NoDistance || start.NoDistance)
-            {
-                ret = this.DistanceBetweenTwoPoints(start, end);
-            }
-            else
-            {
-                ret = end.DistanceInMetres - start.DistanceInMetres;
-            }
-
-            return ret;
-        }
-
-        /// <summary>
-        /// Calculate the distance between two points based on the latitude and longitude and elevation gain.
-        /// </summary>
-        /// <param name="start">The point of start</param>
-        /// <param name="end">The point of end</param>
-        /// <returns>The distance between two points as a function of latitude and longitude difference and altitude gain. Via standard trig.</returns>
-        private double DistanceBetweenTwoPoints(TcxPoint start, TcxPoint end)
-        {
-            double ascent = end.AltitudeInMetres - start.AltitudeInMetres;
-            double x = this.Haversine(start, end);
-            return Math.Sqrt((ascent * ascent) + (x * x));
-        }
-
-        /// <summary>
-        /// Calculate the Haversine distance between a point of lat and long:
-        /// <a href="http://www.movable-type.co.uk/scripts/latlong.html">Reference</a>
-        /// </summary>
-        /// <param name="start">Start Point</param>
-        /// <param name="end">End Point</param>
-        /// <returns>Double, the distance in meters as the crow flies.</returns>
-        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly",
-            Justification = "Reviewed. Haversine is the right name for the forumla.")]
-        private double Haversine(TcxPoint start, TcxPoint end)
-        {
-            double differenceInLat = this.ToRad(end.LatitudeInDegrees - start.LatitudeInDegrees);
-            double differenceInLon = this.ToRad(end.LongitudeInDegrees - start.LongitudeInDegrees);
-
-            double a = (Math.Sin(differenceInLat / 2) * Math.Sin(differenceInLat / 2))
-                       +
-                       (Math.Cos(this.ToRad(start.LatitudeInDegrees)) * Math.Cos(this.ToRad(end.LatitudeInDegrees))
-                        * Math.Sin(differenceInLon / 2) * Math.Sin(differenceInLon / 2));
-            double c = 2 * Math.Asin(Math.Min(1, Math.Sqrt(a)));
-            double d = RadiusOfEarth * c;
-
-            return d;
-        }
-
-        /// <summary>
-        /// Convert degrees to radians.
-        /// </summary>
-        /// <param name="degrees">Degrees to convert.</param>
-        /// <returns>Angle in radians.</returns>
-        private double ToRad(double degrees)
-        {
-            return Math.PI * degrees / 180.0;
         }
 
         /// <summary>

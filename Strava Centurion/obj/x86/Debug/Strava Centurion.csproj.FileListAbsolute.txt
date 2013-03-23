@@ -1,0 +1,9 @@
+C:\Users\James\Documents\GitHub\strava-centurion\Strava Centurion\bin\Debug\Strava Centurion.exe.config
+C:\Users\James\Documents\GitHub\strava-centurion\Strava Centurion\bin\Debug\Strava Centurion.exe
+C:\Users\James\Documents\GitHub\strava-centurion\Strava Centurion\bin\Debug\Strava Centurion.pdb
+C:\Users\James\Documents\GitHub\strava-centurion\Strava Centurion\obj\x86\Debug\Strava Centurion.csprojResolveAssemblyReference.cache
+C:\Users\James\Documents\GitHub\strava-centurion\Strava Centurion\obj\x86\Debug\Strava_Centurion.MainForm.resources
+C:\Users\James\Documents\GitHub\strava-centurion\Strava Centurion\obj\x86\Debug\Strava_Centurion.Properties.Resources.resources
+C:\Users\James\Documents\GitHub\strava-centurion\Strava Centurion\obj\x86\Debug\Strava Centurion.csproj.GenerateResource.Cache
+C:\Users\James\Documents\GitHub\strava-centurion\Strava Centurion\obj\x86\Debug\Strava Centurion.exe
+C:\Users\James\Documents\GitHub\strava-centurion\Strava Centurion\obj\x86\Debug\Strava Centurion.pdb
