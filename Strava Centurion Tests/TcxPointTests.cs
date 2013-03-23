@@ -32,25 +32,20 @@ namespace Strava_Centurion_Tests
             Assert.IsNotNull(tcxPoint);
         }
 
-        // and we could then write tests like this that assert the correct xml access is going on...
-
-        /*
         [Test]
-        public void WhenConstructedXmlFileAccessOccurs()
+        public void WhenConstructedSpeedIsRead()
         {
             // arrange
-            var mockXmlNode = MockRepository.GenerateMock<INode>();
-            mockXmlNode.Stub(s => s.SafeGetNodeText(Arg<string>.Is.Anything)).Return(50);
+            var mockNode = MockRepository.GenerateMock<INode>();
+            mockNode.Stub(s => s.GetSpeed()).Return(50);
 
             // act
-            var tcxPoint = new DataPoint(mockXmlNode);
+            var tcxPoint = new DataPoint(mockNode);
 
             // assert
-            mockXmlNode.AssertWasCalled(s => SafeGetNodeText("tcx:AltitudeMeters"));
-            mockXmlNode.AssertWasCalled(s => SafeGetNodeText("tcx:DistanceMeters"));
-            mockXmlNode.AssertWasCalled(s => SafeGetNodeText("tcx:Cadence"));
-            etc.
+            mockNode.AssertWasCalled(s => s.GetSpeed());
         }
-         * */
+
+        // etc.
     }
 }
