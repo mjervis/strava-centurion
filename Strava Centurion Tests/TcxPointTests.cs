@@ -22,31 +22,15 @@ namespace Strava_Centurion_Tests
         [Test]
         public void CanConstructWithoutException()
         {
-            // arrange  (see internet on triple-A syntax for unit tests...)
-
-            // act
-            var tcxPoint = new TcxPoint(null, null); // chaboom! a sure fire way to show that we didn't TDD properly 
-
-            // assert
-            Assert.IsNotNull(tcxPoint);
-        }
-
-        // the above test, if TDD had took place, might have looked something like this...
-
-        /*
-        [Test]
-        public void CanConstructWithoutException()
-        {
             // arrange
-            var mockXmlNode = MockRepository.GenerateMock<IXmlNode>();  // <-- where IXmlFileAccess is our own abstraction.
+            var mockXmlNode = MockRepository.GenerateMock<INode>();
 
             // act
-            var tcxPoint = new TcxPoint(mockXmlNode);
+            var tcxPoint = new DataPoint(mockXmlNode);
 
             // assert
             Assert.IsNotNull(tcxPoint);
         }
-        */
 
         // and we could then write tests like this that assert the correct xml access is going on...
 
@@ -55,11 +39,11 @@ namespace Strava_Centurion_Tests
         public void WhenConstructedXmlFileAccessOccurs()
         {
             // arrange
-            var mockXmlNode = MockRepository.GenerateMock<XmlNode>();
+            var mockXmlNode = MockRepository.GenerateMock<INode>();
             mockXmlNode.Stub(s => s.SafeGetNodeText(Arg<string>.Is.Anything)).Return(50);
 
             // act
-            var tcxPoint = new TcxPoint(mockXmlNode);
+            var tcxPoint = new DataPoint(mockXmlNode);
 
             // assert
             mockXmlNode.AssertWasCalled(s => SafeGetNodeText("tcx:AltitudeMeters"));

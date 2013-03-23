@@ -6,3 +6,4 @@ C:\Users\James\Documents\GitHub\strava-centurion\Strava Centurion\obj\Debug\Stra
 C:\Users\James\Documents\GitHub\strava-centurion\Strava Centurion\obj\Debug\Strava Centurion.csproj.GenerateResource.Cache
 C:\Users\James\Documents\GitHub\strava-centurion\Strava Centurion\obj\Debug\Strava Centurion.exe
 C:\Users\James\Documents\GitHub\strava-centurion\Strava Centurion\obj\Debug\Strava Centurion.pdb
+C:\Users\James\Documents\GitHub\strava-centurion\Strava Centurion\obj\Debug\Strava Centurion.csprojResolveAssemblyReference.cache

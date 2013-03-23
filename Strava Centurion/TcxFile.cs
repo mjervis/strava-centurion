@@ -40,7 +40,7 @@ namespace Strava_Centurion
         /// <summary>
         /// List of track points in the TCX file.
         /// </summary>
-        private List<TcxPoint> trackPoints = new List<TcxPoint>();
+        private List<DataPoint> trackPoints = new List<DataPoint>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TcxFile"/> class. 
@@ -59,7 +59,7 @@ namespace Strava_Centurion
         /// <summary>
         /// Gets or sets the list of track points in the TCX file.
         /// </summary>
-        public List<TcxPoint> TrackPoints
+        public List<DataPoint> TrackPoints
         {
             get
             {
@@ -113,7 +113,7 @@ namespace Strava_Centurion
             {
                 foreach (XmlNode node in nodes)
                 {
-                    var tcxPoint = new TcxPoint(node, this.xmlNamespaceManager);
+                    var tcxPoint = new DataPoint(new TcxNode(node, this.xmlNamespaceManager));
                     this.TrackPoints.Add(tcxPoint);
                 }
             }

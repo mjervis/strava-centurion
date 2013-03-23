@@ -144,22 +144,22 @@ namespace Strava_Centurion
         /// <param name="file">The <see cref="TcxFile"/> to Morph</param>
         public void Morph(TcxFile file)
         {
-            TcxPoint start = file.TrackPoints[0];
+            DataPoint start = file.TrackPoints[0];
             start.PowerInWatts = 0.0;
             for (int i = 1; i < file.TrackPoints.Count; i++)
             {
-                TcxPoint end = file.TrackPoints[i];
+                DataPoint end = file.TrackPoints[i];
                 this.GeneratePower(start, end);
                 start = end;
             }
         }
 
         /// <summary>
-        /// Generate the power taken to move from <see cref="TcxPoint"/> to <see cref="TcxPoint"/>
+        /// Generate the power taken to move from <see cref="DataPoint"/> to <see cref="DataPoint"/>
         /// </summary>
-        /// <param name="start">The <see cref="TcxPoint"/> the rider started at.</param>
-        /// <param name="end">The <see cref="TcxPoint"/> the rider ended at.</param>
-        private void GeneratePower(TcxPoint start, TcxPoint end)
+        /// <param name="start">The <see cref="DataPoint"/> the rider started at.</param>
+        /// <param name="end">The <see cref="DataPoint"/> the rider ended at.</param>
+        private void GeneratePower(DataPoint start, DataPoint end)
         {
             // Distance is sometimes literal, and sometimes we need to trig it, depending on source data..
             double distance = start.DistanceInMetresToPoint(end);
@@ -188,7 +188,7 @@ namespace Strava_Centurion
                  *  h is distance, y is acent
                  */
 
-                // TODO: Mike is this right?  This seems to be duplicated in TcxPoint.DistanceInMetresToPoint
+                // TODO: Mike is this right?  This seems to be duplicated in DataPoint.DistanceInMetresToPoint
                 double x = Math.Sqrt((distance * distance) - (ascent * ascent));
                 double gradient = ascent / x;
 

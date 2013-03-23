@@ -73,13 +73,15 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="INode.cs" />
     <Compile Include="PowerRanger.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reality.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="TcxFile.cs" />
-    <Compile Include="TcxPoint.cs" />
+    <Compile Include="TcxNode.cs" />
+    <Compile Include="DataPoint.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
