@@ -1,0 +1,30 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Strava_Centurion.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="Crr" Type="System.String" Scope="User">
+      <Value Profile="(Default)">0.0045</Value>
+    </Setting>
+    <Setting Name="frontalArea" Type="System.String" Scope="User">
+      <Value Profile="(Default)">0.399483</Value>
+    </Setting>
+    <Setting Name="coefficientDrag" Type="System.String" Scope="User">
+      <Value Profile="(Default)">0.5</Value>
+    </Setting>
+    <Setting Name="riderWeight" Type="System.String" Scope="User">
+      <Value Profile="(Default)">76.7</Value>
+    </Setting>
+    <Setting Name="bikeWeight" Type="System.String" Scope="User">
+      <Value Profile="(Default)">10.5</Value>
+    </Setting>
+    <Setting Name="temperature" Type="System.String" Scope="User">
+      <Value Profile="(Default)">15</Value>
+    </Setting>
+    <Setting Name="incAccel" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="csvOut" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
