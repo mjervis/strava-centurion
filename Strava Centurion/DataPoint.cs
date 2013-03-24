@@ -153,6 +153,23 @@ namespace Strava_Centurion
         }
 
         /// <summary>
+        /// Calculate the gradient from this point to another point as the ratio of the
+        /// distance in m climbed over the distance in m travelled.
+        /// </summary>
+        /// <param name="other">The other point.</param>
+        /// <returns>Ratio of ascent to distance.</returns>
+        public double GradientToPoint(DataPoint other)
+        {
+            /*
+             * Trig:
+             *  h = sqrt(x^2 + y^2) where x and y are the lengths of the other two sides.
+             *  we have lots of x, y and h.
+             *  Gradient, as a ration is y/x 
+             */
+            return this.AscentInMetresToPoint(other) / this.HaversineDistanceInMetresToPoint(other);
+        }
+
+        /// <summary>
         /// Calculates the haversine distance in meters between this point and another using latitude and longitude:
         /// <a href="http://www.movable-type.co.uk/scripts/latlong.html">Reference</a>
         /// </summary>

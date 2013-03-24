@@ -165,33 +165,16 @@ namespace Strava_Centurion
             double distance = start.DistanceInMetresToPoint(end);
             double time = end.DateTime.Subtract(start.DateTime).TotalSeconds;
             double speed = distance / time;
+            double gradient = start.GradientToPoint(end);
             if (end.CadenceInRpm == "0")
             {
                 // "distance,gradient,time,speed,rollingpower,hillpower,windpower,accellerationpower,totalPower,wattage"
                 this.Csv.AppendFormat(
-                    "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9}", distance, "--", time, speed, 0, 0, 0, 0, 0, 0).AppendLine();
+                    "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9}", distance, gradient, time, speed, 0, 0, 0, 0, 0, 0).AppendLine();
                 this.previousSpeed = speed;
             }
             else
             {
-                var ascent = start.AscentInMetresToPoint(end);
-
-                /*
-                 * Trig:
-                 *  h = sqrt(x^2 + y^2) where x and y are the lengths of the other two sides.
-                 *  y is ascent, we know that.
-                 *  h is distance, we know that.
-                 *  We need x, so rarranging:
-                 *  h^2 = x^2 + y^2
-                 *  h^2 - y^2 = x ^2
-                 *  sqrt(h^2 - y^2) = x
-                 *  h is distance, y is acent
-                 */
-
-                // TODO: Mike is this right?  This seems to be duplicated in DataPoint.DistanceInMetresToPoint
-                double x = Math.Sqrt((distance * distance) - (ascent * ascent));
-                double gradient = ascent / x;
-
                 // "distance,gradient,time,speed,rollingpower,hillpower,windpower,accellerationpower,totalPower,wattage"
                 this.Csv.AppendFormat("{0},{1},{2},{3},", distance, gradient, time, speed);
                 end.PowerInWatts = this.TotalPower(speed, end.AltitudeInMetres, gradient, time, this.previousSpeed);
