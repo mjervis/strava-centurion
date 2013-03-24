@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="INode.cs" company="">
-//   
+// <copyright file="INode.cs" company="RuPC">
+//   Copyright 2013 RuPC
 // </copyright>
 // <summary>
 //   Defines the INode type.

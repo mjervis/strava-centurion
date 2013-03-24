@@ -173,18 +173,26 @@ namespace Strava_Centurion
         [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
         public Distance HaversineDistanceToPoint(DataPoint other)
         {
-            var differenceInLat = other.Latitude - this.Latitude;
-            var differenceInLon = other.Longitude - this.Longitude;
+            var latitudeDelta = other.Latitude - this.Latitude;
+            var longitudeDelta = other.Longitude - this.Longitude;
 
-            var a = Math.Sin(differenceInLat / 2) * Math.Sin(differenceInLat / 2) +
-                    Math.Cos(this.Latitude) * Math.Cos(other.Latitude) *
-                    Math.Sin(differenceInLon / 2) * Math.Sin(differenceInLon / 2);
+            var h = this.Haversine(latitudeDelta) + (Math.Cos(this.Latitude) * Math.Cos(other.Latitude) * this.Haversine(longitudeDelta));
 
-            var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+            var radius = this.GetRadiusOfEarth(this.Latitude);
 
-            var d = this.GetRadiusOfEarth(this.Latitude) * c;
+            var distance = 2 * radius * Math.Asin(Math.Sqrt(h));
 
-            return new Distance(d);
+            return new Distance(distance);
+        }
+
+        /// <summary>
+        /// Calculates the haversine of theta.
+        /// </summary>
+        /// <param name="theta">The theta value.</param>
+        /// <returns>The haversine of theta.</returns>
+        private double Haversine(double theta)
+        {
+            return Math.Pow(Math.Sin(theta / 2), 2);
         }
 
         /// <summary>
