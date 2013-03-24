@@ -8,7 +8,6 @@
 
 namespace Strava_Centurion
 {
-    using System;
     using System.Diagnostics.CodeAnalysis;
     using System.Text;
 
@@ -162,7 +161,7 @@ namespace Strava_Centurion
         private void GeneratePower(DataPoint start, DataPoint end)
         {
             // Distance is sometimes literal, and sometimes we need to trig it, depending on source data..
-            double distance = start.DistanceInMetresToPoint(end);
+            double distance = start.DistanceToPoint(end).Metres;
             double time = end.DateTime.Subtract(start.DateTime).TotalSeconds;
             double speed = distance / time;
             double gradient = start.GradientToPoint(end);
@@ -177,7 +176,7 @@ namespace Strava_Centurion
             {
                 // "distance,gradient,time,speed,rollingpower,hillpower,windpower,accellerationpower,totalPower,wattage"
                 this.Csv.AppendFormat("{0},{1},{2},{3},", distance, gradient, time, speed);
-                end.PowerInWatts = this.TotalPower(speed, end.AltitudeInMetres, gradient, time, this.previousSpeed);
+                end.PowerInWatts = this.TotalPower(speed, end.Altitude.Metres, gradient, time, this.previousSpeed);
                 this.previousSpeed = speed;
             }
         }

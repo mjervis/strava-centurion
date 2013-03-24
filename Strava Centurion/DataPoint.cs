@@ -17,11 +17,6 @@ namespace Strava_Centurion
     public class DataPoint
     {
         /// <summary>
-        /// Mean radius of the earth in m.
-        /// </summary>
-        private const double RadiusOfEarth = 6371000;
-
-        /// <summary>
         /// The node used to access the underlying storage.
         /// </summary>
         private readonly INode node;
@@ -43,13 +38,13 @@ namespace Strava_Centurion
             this.node = node;
 
             this.DateTime = node.GetDateTime();
-            this.AltitudeInMetres = node.GetAltitude();
+            this.Altitude = new Distance(node.GetAltitude());
             this.CadenceInRpm = node.GetCadence();
-            this.TotalDistanceInMetres = node.GetTotalDistance();
+            this.TotalDistance = new Distance(node.GetTotalDistance());
             this.SpeedInKmPerHour = node.GetSpeed();
             this.HeartrateInBpm = node.GetHeartrate();
-            this.LatitudeInDegrees = node.GetLatitude();
-            this.LongitudeInDegrees = node.GetLongitude();
+            this.Latitude = new Angle { Degrees = node.GetLatitude() };
+            this.Longitude = new Angle { Degrees = node.GetLongitude() };
             this.PowerInWatts = node.GetPower();
         }
 
@@ -58,7 +53,7 @@ namespace Strava_Centurion
         /// <summary>
         /// Gets the altitude in meters
         /// </summary>
-        public double AltitudeInMetres { get; private set; }
+        public Distance Altitude { get; private set; }
 
         /// <summary>
         /// Gets the heart rate in beats per minute.
@@ -95,7 +90,7 @@ namespace Strava_Centurion
         /// <summary>
         /// Gets the distance in meters.
         /// </summary>
-        public double TotalDistanceInMetres { get; private set; }
+        public Distance TotalDistance { get; private set; }
 
         /// <summary>
         /// Gets or sets the date and time that the point was recorded
@@ -105,12 +100,12 @@ namespace Strava_Centurion
         /// <summary>
         /// Gets or sets the longitude in degrees.
         /// </summary>
-        public double LongitudeInDegrees { get; set; }
+        public Angle Longitude { get; set; }
 
         /// <summary>
         /// Gets or sets the latitude in degrees.
         /// </summary>
-        public double LatitudeInDegrees { get; set; }
+        public Angle Latitude { get; set; }
 
         #endregion
 
@@ -123,20 +118,20 @@ namespace Strava_Centurion
         /// <returns>
         /// The distance in meters between the two points.
         /// </returns>
-        public double DistanceInMetresToPoint(DataPoint other)
+        public Distance DistanceToPoint(DataPoint other)
         {
-            double result;
+            Distance result;
 
-            if (double.IsNaN(this.TotalDistanceInMetres) || double.IsNaN(other.TotalDistanceInMetres))
+            if (double.IsNaN(this.TotalDistance) || double.IsNaN(other.TotalDistance))
             {
                 var ascent = this.AscentInMetresToPoint(other);
                 var haversine = this.HaversineDistanceInMetresToPoint(other);
 
-                result = Math.Sqrt((ascent * ascent) + (haversine * haversine));
+                result = new Distance(Math.Sqrt((ascent * ascent) + (haversine * haversine)));
             }
             else
             {
-                result = other.TotalDistanceInMetres - this.TotalDistanceInMetres;
+                result = other.TotalDistance - this.TotalDistance;
             }
 
             return result;
@@ -147,9 +142,9 @@ namespace Strava_Centurion
         /// </summary>
         /// <param name="other">The other point.</param>
         /// <returns>The ascent in meters.</returns>
-        public double AscentInMetresToPoint(DataPoint other)
+        public Distance AscentInMetresToPoint(DataPoint other)
         {
-            return other.AltitudeInMetres - this.AltitudeInMetres;
+            return other.Altitude - this.Altitude;
         }
 
         /// <summary>
@@ -178,26 +173,28 @@ namespace Strava_Centurion
         [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
         public double HaversineDistanceInMetresToPoint(DataPoint other)
         {
-            var differenceInLat = this.ToRad(other.LatitudeInDegrees - this.LatitudeInDegrees);
-            var differenceInLon = this.ToRad(other.LongitudeInDegrees - this.LongitudeInDegrees);
+            var differenceInLat = other.Latitude - this.Latitude;
+            var differenceInLon = other.Longitude - this.Longitude;
 
             var a = Math.Sin(differenceInLat / 2) * Math.Sin(differenceInLat / 2) +
-                Math.Cos(this.ToRad(this.LatitudeInDegrees)) * Math.Cos(this.ToRad(other.LatitudeInDegrees)) *
-                Math.Sin(differenceInLon / 2) * Math.Sin(differenceInLon / 2);
+                    Math.Cos(this.Latitude) * Math.Cos(other.Latitude) *
+                    Math.Sin(differenceInLon / 2) * Math.Sin(differenceInLon / 2);
+
             var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
-            var d = RadiusOfEarth * c;
+
+            var d = this.GetRadiusOfEarth(this.Latitude) * c;
 
             return d;
         }
 
         /// <summary>
-        /// Convert degrees to radians.
+        /// Gets the approximate radius of the earth at a given latitude based on WGS84 reference ellipsoid.
         /// </summary>
-        /// <param name="degrees">Degrees to convert.</param>
-        /// <returns>Angle in radians.</returns>
-        private double ToRad(double degrees)
+        /// <param name="latitude">The latitude in degrees.</param>
+        /// <returns>The radius.</returns>
+        private double GetRadiusOfEarth(Angle latitude)
         {
-            return Math.PI * degrees / 180.0;
+            return 6378000 - (21000 * Math.Sin(latitude));
         }
     }
 }
