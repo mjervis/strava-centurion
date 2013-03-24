@@ -43,8 +43,8 @@ namespace Strava_Centurion
             this.TotalDistance = new Distance(node.GetTotalDistance());
             this.SpeedInKmPerHour = node.GetSpeed();
             this.HeartrateInBpm = node.GetHeartrate();
-            this.Latitude = new Angle { Degrees = node.GetLatitude() };
-            this.Longitude = new Angle { Degrees = node.GetLongitude() };
+            this.Latitude = Angle.FromDegrees(node.GetLatitude());
+            this.Longitude = Angle.FromDegrees(node.GetLongitude());
             this.PowerInWatts = node.GetPower();
         }
 
