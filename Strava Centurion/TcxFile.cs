@@ -57,18 +57,13 @@ namespace Strava_Centurion
         }
 
         /// <summary>
-        /// Gets or sets the list of track points in the TCX file.
+        /// Gets the list of track points in the TCX file.
         /// </summary>
         public List<DataPoint> TrackPoints
         {
             get
             {
                 return this.trackPoints;
-            }
-
-            set
-            {
-                this.trackPoints = value;
             }
         }
 
