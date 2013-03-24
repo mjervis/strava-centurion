@@ -19,7 +19,7 @@ namespace Strava_Centurion
         /// <summary>
         /// Mean radius of the earth in m.
         /// </summary>
-        private const double RadiusOfEarth = 6378100.0;
+        private const double RadiusOfEarth = 6371000;
 
         /// <summary>
         /// The node used to access the underlying storage.
@@ -176,15 +176,15 @@ namespace Strava_Centurion
         /// <param name="other">The other point.</param>
         /// <returns>Double, the distance in meters as the crow flies.</returns>
         [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
-        private double HaversineDistanceInMetresToPoint(DataPoint other)
+        public double HaversineDistanceInMetresToPoint(DataPoint other)
         {
             var differenceInLat = this.ToRad(other.LatitudeInDegrees - this.LatitudeInDegrees);
             var differenceInLon = this.ToRad(other.LongitudeInDegrees - this.LongitudeInDegrees);
 
-            var a = (Math.Sin(differenceInLat / 2) * Math.Sin(differenceInLat / 2)) +
-                    (Math.Cos(this.ToRad(this.LatitudeInDegrees)) * Math.Cos(this.ToRad(other.LatitudeInDegrees))
-                        * Math.Sin(differenceInLon / 2) * Math.Sin(differenceInLon / 2));
-            var c = 2 * Math.Asin(Math.Min(1, Math.Sqrt(a)));
+            var a = Math.Sin(differenceInLat / 2) * Math.Sin(differenceInLat / 2) +
+                Math.Cos(this.ToRad(this.LatitudeInDegrees)) * Math.Cos(this.ToRad(other.LatitudeInDegrees)) *
+                Math.Sin(differenceInLon / 2) * Math.Sin(differenceInLon / 2);
+            var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
             var d = RadiusOfEarth * c;
 
             return d;

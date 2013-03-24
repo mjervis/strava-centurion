@@ -160,24 +160,41 @@ namespace Strava_Centurion_Tests
         }
 
         [Test]
-        public void HaversineChecks()
+        public void DistanceInMetersWithNoTotalDistanceTest()
         {
             var mockNodeStart = MockRepository.GenerateMock<INode>();
             mockNodeStart.Stub(s => s.GetLatitude()).Return(53.296161);
             mockNodeStart.Stub(s => s.GetLongitude()).Return(-1.513128);
-            mockNodeStart.Stub(s => s.GetAltitude()).Return(428.701);
+            mockNodeStart.Stub(s => s.GetAltitude()).Return(5);
             mockNodeStart.Stub(s => s.GetTotalDistance()).Return(double.NaN);
             var mockNodeEnd = MockRepository.GenerateMock<INode>();
             mockNodeEnd.Stub(s => s.GetLatitude()).Return(53.295997);
             mockNodeEnd.Stub(s => s.GetLongitude()).Return(-1.513449);
-            mockNodeEnd.Stub(s => s.GetAltitude()).Return(430.304);
+            mockNodeEnd.Stub(s => s.GetAltitude()).Return(10);
             mockNodeEnd.Stub(s => s.GetTotalDistance()).Return(double.NaN);
 
             var tcxPointStart = new DataPoint(mockNodeStart);
             var tcxPointEnd = new DataPoint(mockNodeEnd);
 
             // assert
-            Assert.AreEqual(28.142278638392078, tcxPointStart.DistanceInMetresToPoint(tcxPointEnd));
+            Assert.AreEqual(28.51, Math.Round(tcxPointStart.DistanceInMetresToPoint(tcxPointEnd)), 2);
+        }
+
+        [Test]
+        public void HaversineTest()
+        {
+            var mockNodeStart = MockRepository.GenerateMock<INode>();
+            mockNodeStart.Stub(s => s.GetLatitude()).Return(53.296161);
+            mockNodeStart.Stub(s => s.GetLongitude()).Return(-1.513128);
+            var mockNodeEnd = MockRepository.GenerateMock<INode>();
+            mockNodeEnd.Stub(s => s.GetLatitude()).Return(53.295997);
+            mockNodeEnd.Stub(s => s.GetLongitude()).Return(-1.513449);
+
+            var tcxPointStart = new DataPoint(mockNodeStart);
+            var tcxPointEnd = new DataPoint(mockNodeEnd);
+
+            // assert
+            Assert.AreEqual(28.07, Math.Round(tcxPointStart.HaversineDistanceInMetresToPoint(tcxPointEnd)), 2);
         }
     }
 }
