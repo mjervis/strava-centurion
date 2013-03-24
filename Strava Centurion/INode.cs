@@ -32,7 +32,7 @@ namespace Strava_Centurion
         /// Gets the cadence data.
         /// </summary>
         /// <returns>The cadence.</returns>
-        string GetCadence();
+        double GetCadence();
 
         /// <summary>
         /// Gets the total distance data.

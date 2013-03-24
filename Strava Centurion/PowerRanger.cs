@@ -29,21 +29,6 @@ namespace Strava_Centurion
         private readonly StringBuilder csv;
 
         /// <summary>
-        /// Weight in kg of the rider.
-        /// </summary>
-        private double wkgRider = 76.7;
-
-        /// <summary>
-        /// Weight in kg of the bike
-        /// </summary>
-        private double wkgBike = 10.5;
-
-        /// <summary>
-        /// Total weight of rider plus bike.
-        /// </summary>
-        private double wkg = 87.2;
-
-        /// <summary>
         /// Cache the previous speed for calculating acceleration between track points.
         /// </summary>
         private double previousSpeed;
@@ -59,6 +44,9 @@ namespace Strava_Centurion
         /// </param>
         public PowerRanger(Reality reality)
         {
+            this.RiderWeight = 76.7;
+            this.BikeWeight = 10.5;
+
             this.reality = reality; // snigger;
             this.csv =
                 new StringBuilder(
@@ -71,36 +59,12 @@ namespace Strava_Centurion
         /// <summary>
         /// Gets or sets the weight in kg of the rider.
         /// </summary>
-        public double RiderWeight
-        {
-            get
-            {
-                return this.wkgRider;
-            }
-
-            set
-            {
-                this.wkgRider = value;
-                this.wkg = this.wkgBike + this.wkgRider;
-            }
-        }
+        public double RiderWeight { get; set; }
 
         /// <summary>
         /// Gets or sets the weight in kg of the bike
         /// </summary>
-        public double BikeWeight
-        {
-            get
-            {
-                return this.wkgBike;
-            }
-
-            set
-            {
-                this.wkgBike = value;
-                this.wkg = this.wkgBike + this.wkgRider;
-            }
-        }
+        public double BikeWeight { get; set; }
 
         /// <summary>
         /// Gets the total weight of rider plus bike.
@@ -109,7 +73,7 @@ namespace Strava_Centurion
         {
             get
             {
-                return this.wkg;
+                return this.BikeWeight + this.RiderWeight;
             }
         }
 
@@ -121,17 +85,6 @@ namespace Strava_Centurion
             get
             {
                 return this.csv;
-            }
-        }
-
-        /// <summary>
-        /// Gets the force of rolling resistance based on weight, gravity and coefficient of rolling resistance.
-        /// </summary>
-        private double ForceRollingResistance
-        {
-            get
-            {
-                return this.wkg * this.reality.AccelerationDueToGravity * this.reality.CoefficientOfRollingResistance;
             }
         }
 
@@ -154,31 +107,41 @@ namespace Strava_Centurion
         }
 
         /// <summary>
-        /// Generate the power taken to move from <see cref="DataPoint"/> to <see cref="DataPoint"/>
+        /// Generate the power taken to move from <see cref="DataPoint"/> to <see cref="DataPoint"/> and output
+        /// to CSV in the format of distance,gradient,time,speed,rollingpower,hillpower,windpower,accellerationpower,totalPower,wattage
         /// </summary>
         /// <param name="start">The <see cref="DataPoint"/> the rider started at.</param>
         /// <param name="end">The <see cref="DataPoint"/> the rider ended at.</param>
         private void GeneratePower(DataPoint start, DataPoint end)
         {
-            // Distance is sometimes literal, and sometimes we need to trig it, depending on source data..
-            double distance = start.DistanceToPoint(end).Metres;
-            double time = end.DateTime.Subtract(start.DateTime).TotalSeconds;
-            double speed = distance / time;
-            double gradient = start.GradientToPoint(end);
-            if (end.CadenceInRpm == "0")
+            var distance = start.DistanceToPoint(end).Metres;
+            var gradient = start.GradientToPoint(end);
+            var time = end.DateTime.Subtract(start.DateTime).TotalSeconds;
+            var speed = distance / time;
+
+            this.Csv.AppendFormat("{0},{1},{2},{3},", distance, gradient, time, speed);
+
+            // TODO: this is surely not right - I might be free wheeling now but not so at start
+            // TODO: this needs to be a check that average cadence between two points is not 0.
+            if (end.CadenceInRpm == 0)
             {
-                // "distance,gradient,time,speed,rollingpower,hillpower,windpower,accellerationpower,totalPower,wattage"
-                this.Csv.AppendFormat(
-                    "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9}", distance, gradient, time, speed, 0, 0, 0, 0, 0, 0).AppendLine();
-                this.previousSpeed = speed;
+                this.Csv.AppendFormat("{0},{1},{2},{3},{4},{5}", 0, 0, 0, 0, 0, 0).AppendLine();
             }
             else
             {
-                // "distance,gradient,time,speed,rollingpower,hillpower,windpower,accellerationpower,totalPower,wattage"
-                this.Csv.AppendFormat("{0},{1},{2},{3},", distance, gradient, time, speed);
-                end.PowerInWatts = this.TotalPower(speed, end.Altitude.Metres, gradient, time, this.previousSpeed);
-                this.previousSpeed = speed;
+                var rollingResistanceForce = this.CalculateRollingResistanceForce();
+                var accelerationForce = this.CalculateAccelerationForce(this.previousSpeed, speed, time);
+                var hillForce = this.CalculateHillForce(gradient);
+                var windForce = this.CalculateWindForce(speed, end.Altitude);
+
+                var totalPower = rollingResistanceForce + accelerationForce + hillForce + windForce;
+
+                this.Csv.AppendFormat("{0},{1},{2},{3},{4},{5}", rollingResistanceForce, hillForce, windForce, accelerationForce, totalPower, totalPower * speed).AppendLine();
+
+                end.PowerInWatts = totalPower * speed;
             }
+
+            this.previousSpeed = speed;
         }
 
         /// <summary>
@@ -190,10 +153,9 @@ namespace Strava_Centurion
         /// <returns>Force required in Newtons.</returns>
         [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly",
             Justification = "Reviewed. Suppression is OK here, Newtons is a word.")]
-        private double WindForce(double speed, double altitude)
+        private double CalculateWindForce(double speed, double altitude)
         {
-            return 0.5 * this.reality.EffectiveFrontalArea * this.reality.DragCoefficient
-                   * this.reality.AirDensity(altitude) * (speed * speed);
+            return 0.5 * this.reality.EffectiveFrontalArea * this.reality.DragCoefficient * this.reality.AirDensity(altitude) * (speed * speed);
         }
 
         /// <summary>
@@ -202,11 +164,10 @@ namespace Strava_Centurion
         /// </summary>
         /// <param name="gradient">Gradient as the ratio of ascent to distance.</param>
         /// <returns>Force required in Newtons.</returns>
-        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly",
-            Justification = "Reviewed. Suppression is OK here, Newtons is a word.")]
-        private double HillForce(double gradient)
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here, Newtons is a word.")]
+        private double CalculateHillForce(double gradient)
         {
-            return this.wkg * this.reality.AccelerationDueToGravity * gradient;
+            return this.TotalWeight * this.reality.AccelerationDueToGravity * gradient;
         }
 
         /// <summary>
@@ -216,44 +177,26 @@ namespace Strava_Centurion
         /// <param name="endSpeed">Speed the rider ended at in m/s</param>
         /// <param name="time">Time taken in s</param>
         /// <returns>Force required in Newtons.</returns>
-        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly",
-            Justification = "Reviewed. Suppression is OK here, Newtons is a word.")]
-        private double AccelerationPower(double startSpeed, double endSpeed, double time)
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here, Newtons is a word.")]
+        private double CalculateAccelerationForce(double startSpeed, double endSpeed, double time)
         {
-            double acceleration = (endSpeed - startSpeed) / time;
-            return this.wkg * acceleration;
+            // TODO: Check this - Surely decelleration denotes power being taken from the system?
+            if (endSpeed > startSpeed)
+            {
+                var acceleration = (endSpeed - startSpeed) / time;
+
+                return this.TotalWeight * acceleration;
+            }
+
+            return 0;
         }
 
         /// <summary>
-        /// Calculate the total power required to move from point a to point b.
+        /// Gets the force of rolling resistance based on weight, gravity and coefficient of rolling resistance.
         /// </summary>
-        /// <param name="currentSpeed">Speed over segment at in m/s.</param>
-        /// <param name="altitude">Altitude in m</param>
-        /// <param name="gradient">Gradient of segment</param>
-        /// <param name="time">Time taken in s</param>
-        /// <param name="startSpeed">Speed at the start of segment in m/s</param>
-        /// <returns>Power required to move in watts.</returns>
-        private double TotalPower(double currentSpeed, double altitude, double gradient, double time, double startSpeed)
+        private double CalculateRollingResistanceForce()
         {
-            double totalPower = this.ForceRollingResistance;
-            if (currentSpeed > startSpeed)
-            {
-                totalPower += this.AccelerationPower(startSpeed, currentSpeed, time);
-            }
-
-            totalPower += this.HillForce(gradient) + this.WindForce(currentSpeed, altitude);
-
-            // "rollingpower,hillpower,windpower,accellerationpower,totalPower,wattage"
-            this.Csv.AppendFormat(
-                "{0},{1},{2},{3},{4},{5}",
-                this.ForceRollingResistance,
-                this.HillForce(gradient),
-                this.WindForce(currentSpeed, altitude),
-                this.AccelerationPower(startSpeed, currentSpeed, time),
-                totalPower,
-                totalPower * currentSpeed).AppendLine();
-
-            return totalPower * currentSpeed;
+            return this.TotalWeight * this.reality.AccelerationDueToGravity * this.reality.CoefficientOfRollingResistance;
         }
     }
 }

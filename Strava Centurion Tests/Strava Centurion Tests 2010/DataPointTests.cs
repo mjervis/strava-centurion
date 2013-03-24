@@ -51,7 +51,7 @@ namespace Strava_Centurion_Tests
         {
             // arrange
             var mockNode = MockRepository.GenerateMock<INode>();
-            mockNode.Stub(s => s.GetCadence()).Return("83");
+            mockNode.Stub(s => s.GetCadence()).Return(83);
 
             // act
             var tcxPoint = new DataPoint(mockNode);

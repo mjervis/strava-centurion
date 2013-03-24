@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="TcxNode.cs" company="">
-//   
+// <copyright file="TcxNode.cs" company="RuPC">
+//   Copyright 2013 RuPC
 // </copyright>
 // <summary>
 //   The tcx file node.
@@ -14,7 +14,7 @@ namespace Strava_Centurion
     using System.Xml;
 
     /// <summary>
-    /// The tcx file node.
+    /// The TCX file node.
     /// </summary>
     public class TcxNode : INode
     {
@@ -127,9 +127,16 @@ namespace Strava_Centurion
         /// Gets the cadence for this node.
         /// </summary>
         /// <returns>The cadence.</returns>
-        public string GetCadence()
+        public double GetCadence()
         {
-            return this.SafeGetNodeText(CadenceXpath);
+            double cadence;
+
+            if (double.TryParse(this.SafeGetNodeText(CadenceXpath), out cadence))
+            {
+                return cadence;
+            }
+
+            return 0;
         }
 
         /// <summary>

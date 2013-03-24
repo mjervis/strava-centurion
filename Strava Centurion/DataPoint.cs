@@ -63,7 +63,7 @@ namespace Strava_Centurion
         /// <summary>
         /// Gets the cadence in revolutions per minute.
         /// </summary>
-        public string CadenceInRpm { get; private set; }
+        public double CadenceInRpm { get; private set; }
 
         /// <summary>
         /// Gets or sets the power in watts.
