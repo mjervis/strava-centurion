@@ -7,3 +7,13 @@ C:\Users\James\Documents\GitHub\strava-centurion\Strava Centurion\obj\Debug\Stra
 C:\Users\James\Documents\GitHub\strava-centurion\Strava Centurion\obj\Debug\Strava Centurion.exe
 C:\Users\James\Documents\GitHub\strava-centurion\Strava Centurion\obj\Debug\Strava Centurion.pdb
 C:\Users\James\Documents\GitHub\strava-centurion\Strava Centurion\obj\Debug\Strava Centurion.csprojResolveAssemblyReference.cache
+C:\Users\michael.jervis\Documents\GitHub\strava-centurion\Strava Centurion\bin\Debug\Strava Centurion.exe.config
+C:\Users\michael.jervis\Documents\GitHub\strava-centurion\Strava Centurion\obj\Debug\Strava Centurion.exe
+C:\Users\michael.jervis\Documents\GitHub\strava-centurion\Strava Centurion\obj\Debug\Strava Centurion.pdb
+C:\Users\michael.jervis\Documents\GitHub\strava-centurion\Strava Centurion\bin\Debug\Strava Centurion.exe
+C:\Users\michael.jervis\Documents\GitHub\strava-centurion\Strava Centurion\bin\Debug\Strava Centurion.pdb
+C:\Users\michael.jervis\Documents\GitHub\strava-centurion\Strava Centurion\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\michael.jervis\Documents\GitHub\strava-centurion\Strava Centurion\obj\Debug\Strava_Centurion.MainForm.resources
+C:\Users\michael.jervis\Documents\GitHub\strava-centurion\Strava Centurion\obj\Debug\Strava_Centurion.Properties.Resources.resources
+C:\Users\michael.jervis\Documents\GitHub\strava-centurion\Strava Centurion\obj\Debug\GenerateResource.read.1.tlog
+C:\Users\michael.jervis\Documents\GitHub\strava-centurion\Strava Centurion\obj\Debug\GenerateResource.write.1.tlog
