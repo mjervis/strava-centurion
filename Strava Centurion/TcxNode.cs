@@ -132,6 +132,10 @@ namespace Strava_Centurion
             return this.SafeGetNodeText(CadenceXpath);
         }
 
+        /// <summary>
+        /// Gets the total distance data.
+        /// </summary>
+        /// <returns>The total distance.</returns>
         public double GetTotalDistance()
         {
             double totalDistanceInMetres;
@@ -144,21 +148,37 @@ namespace Strava_Centurion
             return double.NaN;
         }
 
+        /// <summary>
+        /// Gets the heart rate data.
+        /// </summary>
+        /// <returns>The heart rate.</returns>
         public string GetHeartrate()
         {
             return this.SafeGetNodeText(HeartrateXpath);
         }
 
+        /// <summary>
+        /// Gets the longitude data.
+        /// </summary>
+        /// <returns>The longitude.</returns>
         public double GetLongitude()
         {
             return double.Parse(this.SafeGetNodeText(LongitudeXpath));
         }
 
+        /// <summary>
+        /// Gets the latitude data.
+        /// </summary>
+        /// <returns>The latitude.</returns>
         public double GetLatitude()
         {
             return double.Parse(this.SafeGetNodeText(LatitudeXpath));
         }
 
+        /// <summary>
+        /// Gets the speed data (will return 0 if speed cannot be parsed).
+        /// </summary>
+        /// <returns>The speed.</returns>
         public double GetSpeed()
         {
             double speed;
@@ -171,6 +191,10 @@ namespace Strava_Centurion
             return 0;
         }
 
+        /// <summary>
+        /// Gets the power data.
+        /// </summary>
+        /// <returns>The power.</returns>
         public double GetPower()
         {
             double power;
@@ -195,10 +219,18 @@ namespace Strava_Centurion
             {
                 var tpxNode = this.GetTpxNode();
 
-                powerNode = this.xmlNode.OwnerDocument.CreateElement("ns3", "Watts", "http://www.garmin.com/xmlschemas/ActivityExtension/v2");
-                powerNode.InnerText = power.ToString(CultureInfo.InvariantCulture);
+                var ownerDocument = this.xmlNode.OwnerDocument;
+                if (ownerDocument != null)
+                {
+                    powerNode = ownerDocument.CreateElement("ns3", "Watts", "http://www.garmin.com/xmlschemas/ActivityExtension/v2");
+                }
 
-                tpxNode.AppendChild(powerNode);
+                if (powerNode != null)
+                {
+                    powerNode.InnerText = power.ToString(CultureInfo.InvariantCulture);
+
+                    tpxNode.AppendChild(powerNode);
+                }
             }
             else
             {
@@ -217,9 +249,16 @@ namespace Strava_Centurion
             {
                 var extensionNode = this.GetExtensionsNode();
 
-                tpxNode = this.xmlNode.OwnerDocument.CreateElement("ns3", "TPX", "http://www.garmin.com/xmlschemas/ActivityExtension/v2");
+                var ownerDocument = this.xmlNode.OwnerDocument;
+                if (ownerDocument != null)
+                {
+                    tpxNode = ownerDocument.CreateElement("ns3", "TPX", "http://www.garmin.com/xmlschemas/ActivityExtension/v2");
+                }
 
-                extensionNode.AppendChild(tpxNode);
+                if (tpxNode != null)
+                {
+                    extensionNode.AppendChild(tpxNode);
+                }
             }
 
             return tpxNode;
@@ -234,9 +273,16 @@ namespace Strava_Centurion
             var extensionsNode = this.xmlNode.SelectSingleNode(ExtensionsXPath, this.namespaceManager);
             if (extensionsNode == null)
             {
-                extensionsNode = this.xmlNode.OwnerDocument.CreateElement("Extensions");
+                var ownerDocument = this.xmlNode.OwnerDocument;
+                if (ownerDocument != null)
+                {
+                    extensionsNode = ownerDocument.CreateElement("Extensions");
+                }
 
-                this.xmlNode.AppendChild(extensionsNode);
+                if (extensionsNode != null)
+                {
+                    this.xmlNode.AppendChild(extensionsNode);
+                }
             }
 
             return extensionsNode;

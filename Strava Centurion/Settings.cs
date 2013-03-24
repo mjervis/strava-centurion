@@ -8,6 +8,7 @@
 //   Defines the Settings type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace Strava_Centurion.Properties
 {
     using System;
