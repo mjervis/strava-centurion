@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Strava Centurion", "Strava Centurion\Strava Centurion.csproj", "{E7485144-3EC4-4D0C-A6EF-D013D03B507E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Strava Centurion Tests", "Strava Centurion Tests\Strava Centurion Tests.csproj", "{72FB5005-6850-4A8E-BD18-91AE0BDCE7F1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Strava Centurion Tests 2010", "Strava Centurion Tests\Strava Centurion Tests 2010\Strava Centurion Tests 2010.csproj", "{D528D1F3-43BF-4941-ACF5-E699A27A1236}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,18 +27,16 @@ Global
 		{E7485144-3EC4-4D0C-A6EF-D013D03B507E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{E7485144-3EC4-4D0C-A6EF-D013D03B507E}.Release|x86.ActiveCfg = Release|x86
 		{E7485144-3EC4-4D0C-A6EF-D013D03B507E}.Release|x86.Build.0 = Release|x86
-		{72FB5005-6850-4A8E-BD18-91AE0BDCE7F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{72FB5005-6850-4A8E-BD18-91AE0BDCE7F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{72FB5005-6850-4A8E-BD18-91AE0BDCE7F1}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{72FB5005-6850-4A8E-BD18-91AE0BDCE7F1}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{72FB5005-6850-4A8E-BD18-91AE0BDCE7F1}.Debug|x86.ActiveCfg = Debug|x86
-		{72FB5005-6850-4A8E-BD18-91AE0BDCE7F1}.Debug|x86.Build.0 = Debug|x86
-		{72FB5005-6850-4A8E-BD18-91AE0BDCE7F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{72FB5005-6850-4A8E-BD18-91AE0BDCE7F1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{72FB5005-6850-4A8E-BD18-91AE0BDCE7F1}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{72FB5005-6850-4A8E-BD18-91AE0BDCE7F1}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{72FB5005-6850-4A8E-BD18-91AE0BDCE7F1}.Release|x86.ActiveCfg = Release|x86
-		{72FB5005-6850-4A8E-BD18-91AE0BDCE7F1}.Release|x86.Build.0 = Release|x86
+		{D528D1F3-43BF-4941-ACF5-E699A27A1236}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D528D1F3-43BF-4941-ACF5-E699A27A1236}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D528D1F3-43BF-4941-ACF5-E699A27A1236}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{D528D1F3-43BF-4941-ACF5-E699A27A1236}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{D528D1F3-43BF-4941-ACF5-E699A27A1236}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D528D1F3-43BF-4941-ACF5-E699A27A1236}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D528D1F3-43BF-4941-ACF5-E699A27A1236}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D528D1F3-43BF-4941-ACF5-E699A27A1236}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{D528D1F3-43BF-4941-ACF5-E699A27A1236}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{D528D1F3-43BF-4941-ACF5-E699A27A1236}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
