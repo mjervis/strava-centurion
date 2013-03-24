@@ -200,7 +200,7 @@ namespace Strava_Centurion_Tests
             var tcxPointEnd = new DataPoint(mockNodeEnd);
 
             // act
-            var result = tcxPointStart.HaversineDistanceInMetresToPoint(tcxPointEnd);
+            var result = tcxPointStart.HaversineDistanceToPoint(tcxPointEnd);
 
             // assert
             Assert.AreEqual(28.022, result, 0.001);

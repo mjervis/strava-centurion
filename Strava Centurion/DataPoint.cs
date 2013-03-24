@@ -124,8 +124,8 @@ namespace Strava_Centurion
 
             if (double.IsNaN(this.TotalDistance) || double.IsNaN(other.TotalDistance))
             {
-                var ascent = this.AscentInMetresToPoint(other);
-                var haversine = this.HaversineDistanceInMetresToPoint(other);
+                var ascent = this.AscentToPoint(other);
+                var haversine = this.HaversineDistanceToPoint(other);
 
                 result = new Distance(Math.Sqrt((ascent * ascent) + (haversine * haversine)));
             }
@@ -142,7 +142,7 @@ namespace Strava_Centurion
         /// </summary>
         /// <param name="other">The other point.</param>
         /// <returns>The ascent in meters.</returns>
-        public Distance AscentInMetresToPoint(DataPoint other)
+        public Distance AscentToPoint(DataPoint other)
         {
             return other.Altitude - this.Altitude;
         }
@@ -161,7 +161,7 @@ namespace Strava_Centurion
              *  we have lots of x, y and h.
              *  Gradient, as a ration is y/x 
              */
-            return this.AscentInMetresToPoint(other) / this.HaversineDistanceInMetresToPoint(other);
+            return this.AscentToPoint(other) / this.HaversineDistanceToPoint(other);
         }
 
         /// <summary>
@@ -171,7 +171,7 @@ namespace Strava_Centurion
         /// <param name="other">The other point.</param>
         /// <returns>Double, the distance in meters as the crow flies.</returns>
         [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
-        public double HaversineDistanceInMetresToPoint(DataPoint other)
+        public Distance HaversineDistanceToPoint(DataPoint other)
         {
             var differenceInLat = other.Latitude - this.Latitude;
             var differenceInLon = other.Longitude - this.Longitude;
@@ -184,7 +184,7 @@ namespace Strava_Centurion
 
             var d = this.GetRadiusOfEarth(this.Latitude) * c;
 
-            return d;
+            return new Distance(d);
         }
 
         /// <summary>
