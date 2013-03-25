@@ -89,7 +89,7 @@ namespace Strava_Centurion
         /// to CSV in the format of distance,gradient,time,speed,rolling power,hill power,wind power,acceleration power,total Power,wattage
         /// </summary>
         /// <param name="segment">The <see cref="DataSegment"/> the rider has ridden.</param>
-        private void GeneratePower(DataSegment segment)
+        public void GeneratePower(DataSegment segment)
         {
             // TODO: csv output should probably be abstracted away
             // TODO: this should just be an output of some sort - encapsulate the formatting.
@@ -103,7 +103,7 @@ namespace Strava_Centurion
             var totalPower = rollingResistanceForce + accelerationForce + hillForce + windForce;
             if (totalPower < 0.0)
             {
-                totalPower = 0.0; // can't do negative power.
+                totalPower = Force.Zero; // can't do negative power.
             }
 
             segment.End.PowerInWatts = totalPower * segment.Speed.MetersPerSecond;
@@ -118,9 +118,9 @@ namespace Strava_Centurion
         /// <param name="segment">The data segment.</param>
         /// <returns>Force required in Newtons.</returns>
         [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here, Newtons is a word.")]
-        private double CalculateWindForce(DataSegment segment)
+        public Force CalculateWindForce(DataSegment segment)
         {
-            return 0.5 * this.reality.EffectiveFrontalArea * this.reality.DragCoefficient * this.reality.AirDensity(segment.End.Altitude) * (segment.Speed.MetersPerSecond * segment.Speed.MetersPerSecond);
+            return new Force(0.5 * this.reality.EffectiveFrontalArea * this.reality.DragCoefficient * this.reality.AirDensity(segment.End.Altitude) * (segment.Speed.MetersPerSecond * segment.Speed.MetersPerSecond));
         }
 
         /// <summary>
@@ -129,9 +129,9 @@ namespace Strava_Centurion
         /// </summary>
         /// <param name="segment">The segment.</param>
         /// <returns>Force required.</returns>
-        private double CalculateHillForce(DataSegment segment)
+        public Force CalculateHillForce(DataSegment segment)
         {
-            return this.rider.WeightIncludingBike * segment.Gradient;
+            return new Force(this.rider.MassIncludingBike * segment.Gradient);
         }
 
         /// <summary>
@@ -139,24 +139,27 @@ namespace Strava_Centurion
         /// </summary>
         /// <param name="segment">The data segment</param>
         /// <returns>Force required.</returns>
-        private double CalculateAccelerationForce(DataSegment segment)
+        public Force CalculateAccelerationForce(DataSegment segment)
         {
             // TODO: Check this - Surely decelleration denotes power being taken from the system?
             if (segment.End.Speed.MetersPerSecond > segment.Start.Speed.MetersPerSecond)
             {
-                return this.rider.WeightIncludingBike * segment.Acceleration;
+                return new Force(this.rider.MassIncludingBike * segment.Acceleration);
             }
 
-            return 0;
+            return Force.Zero;
         }
 
         /// <summary>
         /// Gets the force of rolling resistance based on weight, gravity and coefficient of rolling resistance.
         /// </summary>
         /// <returns>Returns the force.</returns>
-        private double CalculateRollingResistanceForce()
+        public Force CalculateRollingResistanceForce()
         {
-            return this.rider.WeightIncludingBike * this.reality.CoefficientOfRollingResistance;
+            // weight = mass(kg's) * gravity(9.81 m/s2)
+            // c = rolling resistance coefficient
+            // resistance (newtons) = c * weight
+            return new Force(this.rider.MassIncludingBike * this.reality.AccelerationDueToGravity * this.reality.CoefficientOfRollingResistance);
         }
     }
 }

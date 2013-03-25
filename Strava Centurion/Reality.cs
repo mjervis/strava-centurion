@@ -21,7 +21,7 @@ namespace Strava_Centurion
         /// <summary>
         /// acceleration due to gravity – 9.8 m/s2
         /// </summary>
-        public const double G = 9.8;
+        public const double G = 9.80665;
 
         /// <summary>
         /// The Specific Constant for dry air.
