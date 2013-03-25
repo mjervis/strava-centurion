@@ -78,5 +78,26 @@ namespace Strava_Centurion_Tests_2010
             Speed speed = new Speed(10.0);
             Assert.AreEqual(22.369, speed.MilesPerHour, 0.001);
         }
+
+        [Test]
+        public void ConstructKmHWorks()
+        {
+            Speed speed = new Speed(10.0, SpeedUnits.KilometersHour);
+            Assert.AreEqual(10.0, speed.KmHour, 0.001);
+        }
+
+        [Test]
+        public void ConstructMpHWorks()
+        {
+            Speed speed = new Speed(10.0, SpeedUnits.MilesHour);
+            Assert.AreEqual(10.0, speed.MilesPerHour, 0.001);
+        }
+
+        [Test]
+        public void ConstructFeetPerSecondWorks()
+        {
+            Speed speed = new Speed(10.0, SpeedUnits.FeetSecond);
+            Assert.AreEqual(10.0, speed.FeetPerSecond, 0.001);
+        }
     }
 }

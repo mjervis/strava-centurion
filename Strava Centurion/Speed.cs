@@ -8,19 +8,36 @@
 
 namespace Strava_Centurion
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
+    /// <summary>
+    /// Units of measure for speed.
+    /// </summary>
+    public enum SpeedUnits
+    {
+        /// <summary>
+        /// Speed is in meters per second.
+        /// </summary>
+        MetersSecond,
+        /// <summary>
+        /// Speed is in Km/H
+        /// </summary>
+        KilometersHour,
+        /// <summary>
+        /// Speed is in Feet/s
+        /// </summary>
+        FeetSecond,
+        /// <summary>
+        /// Speed is in Miles/hour
+        /// </summary>
+        MilesHour
+    }
 
     /// <summary>
-    /// TODO: Update summary.
+    /// Encapsulate speed and conversions.
     /// </summary>
     public class Speed
     {
-
         /// <summary>
-        /// Initializes a new instance of the <see cref="Speed"/> class with the given speed.
+        /// Initializes a new instance of the <see cref="Speed"/> class with the given speed in m/s.
         /// </summary>
         /// <param name="metersPerSecond">
         /// The speed in meters per second. Must be positive.
@@ -33,6 +50,25 @@ namespace Strava_Centurion
             }
 
             this.MetersPerSecond = metersPerSecond;
+        }
+
+        public Speed(double speed, SpeedUnits unit)
+        {
+            switch(unit)
+            {
+                case SpeedUnits.MetersSecond:
+                    this.MetersPerSecond = speed;
+                    break;
+                case SpeedUnits.KilometersHour:
+                    this.MetersPerSecond = speed * 0.277777778;
+                    break;
+                case SpeedUnits.MilesHour:
+                    this.MetersPerSecond = speed * 0.44704;
+                    break;
+                case SpeedUnits.FeetSecond:
+                    this.MetersPerSecond = speed * 0.3048;
+                    break;
+            }
         }
 
         /// <summary>
