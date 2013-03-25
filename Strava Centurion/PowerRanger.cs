@@ -101,7 +101,7 @@ namespace Strava_Centurion
             for (int i = 1; i < file.TrackPoints.Count; i++)
             {
                 DataPoint end = file.TrackPoints[i];
-                this.GeneratePower(start, end);
+                this.GeneratePower(new DataSegment(start, end));    // TODO: would you want to maintain a list of data segments?
                 start = end;
             }
         }
@@ -110,82 +110,66 @@ namespace Strava_Centurion
         /// Generate the power taken to move from <see cref="DataPoint"/> to <see cref="DataPoint"/> and output
         /// to CSV in the format of distance,gradient,time,speed,rollingpower,hillpower,windpower,accellerationpower,totalPower,wattage
         /// </summary>
-        /// <param name="start">The <see cref="DataPoint"/> the rider started at.</param>
-        /// <param name="end">The <see cref="DataPoint"/> the rider ended at.</param>
-        private void GeneratePower(DataPoint start, DataPoint end)
+        /// <param name="segment">The <see cref="DataSegment"/> the rider has ridden.</param>
+        private void GeneratePower(DataSegment segment)
         {
-            var distance = start.DistanceToPoint(end).Metres;
-            var gradient = start.GradientToPoint(end);
-            var time = end.DateTime.Subtract(start.DateTime).TotalSeconds;
-            var speed = distance / time;
+            this.Csv.AppendFormat("{0},{1},{2},{3},", segment.Distance, segment.Gradient, segment.ElapsedTime, segment.Speed);
 
-            this.Csv.AppendFormat("{0},{1},{2},{3},", distance, gradient, time, speed);
-
-            // TODO: this is surely not right - I might be free wheeling now but not so at start
-            // TODO: this needs to be a check that average cadence between two points is not 0.
-            if (end.CadenceInRpm == 0)
+            if (segment.Cadence <= 0)
             {
                 this.Csv.AppendFormat("{0},{1},{2},{3},{4},{5}", 0, 0, 0, 0, 0, 0).AppendLine();
             }
             else
             {
                 var rollingResistanceForce = this.CalculateRollingResistanceForce();
-                var accelerationForce = this.CalculateAccelerationForce(this.previousSpeed, speed, time);
-                var hillForce = this.CalculateHillForce(gradient);
-                var windForce = this.CalculateWindForce(speed, end.Altitude);
+                var accelerationForce = this.CalculateAccelerationForce(segment);
+                var hillForce = this.CalculateHillForce(segment);
+                var windForce = this.CalculateWindForce(segment);
 
                 var totalPower = rollingResistanceForce + accelerationForce + hillForce + windForce;
 
-                this.Csv.AppendFormat("{0},{1},{2},{3},{4},{5}", rollingResistanceForce, hillForce, windForce, accelerationForce, totalPower, totalPower * speed).AppendLine();
+                segment.End.PowerInWatts = totalPower * segment.Speed;
 
-                end.PowerInWatts = totalPower * speed;
+                this.Csv.AppendFormat("{0},{1},{2},{3},{4},{5}", rollingResistanceForce, hillForce, windForce, accelerationForce, totalPower, segment.End.PowerInWatts).AppendLine();              
             }
-
-            this.previousSpeed = speed;
         }
 
         /// <summary>
         /// Calculate the force necessary to overcome wind resistance. Based on effective
         /// frontal area, drag coefficient, speed and air density.
         /// </summary>
-        /// <param name="speed">Speed in m/s</param>
-        /// <param name="altitude">Altitude in m</param>
+        /// <param name="segment">The data segment.</param>
         /// <returns>Force required in Newtons.</returns>
-        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly",
-            Justification = "Reviewed. Suppression is OK here, Newtons is a word.")]
-        private double CalculateWindForce(double speed, double altitude)
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here, Newtons is a word.")]
+        private double CalculateWindForce(DataSegment segment)
         {
-            return 0.5 * this.reality.EffectiveFrontalArea * this.reality.DragCoefficient * this.reality.AirDensity(altitude) * (speed * speed);
+            return 0.5 * this.reality.EffectiveFrontalArea * this.reality.DragCoefficient * this.reality.AirDensity(segment.End.Altitude) * (segment.Speed * segment.Speed);
         }
 
         /// <summary>
         /// Calculate the force necessary to overcome the weight of the bike due
         /// to gravity given the gradient of the hill.
         /// </summary>
-        /// <param name="gradient">Gradient as the ratio of ascent to distance.</param>
+        /// <param name="segment">The segment.</param>
         /// <returns>Force required in Newtons.</returns>
         [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here, Newtons is a word.")]
-        private double CalculateHillForce(double gradient)
+        private double CalculateHillForce(DataSegment segment)
         {
-            return this.TotalWeight * this.reality.AccelerationDueToGravity * gradient;
+            return this.TotalWeight * this.reality.AccelerationDueToGravity * segment.Gradient;
         }
 
         /// <summary>
         /// Calculate the force required to accelerate from a start speed to an end speed.
         /// </summary>
-        /// <param name="startSpeed">Speed the rider started at in m/s</param>
-        /// <param name="endSpeed">Speed the rider ended at in m/s</param>
-        /// <param name="time">Time taken in s</param>
+        /// <param name="segment">The data segment</param>
         /// <returns>Force required in Newtons.</returns>
         [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here, Newtons is a word.")]
-        private double CalculateAccelerationForce(double startSpeed, double endSpeed, double time)
+        private double CalculateAccelerationForce(DataSegment segment)
         {
             // TODO: Check this - Surely decelleration denotes power being taken from the system?
-            if (endSpeed > startSpeed)
+            if (segment.End.SpeedInKmPerHour > segment.Start.SpeedInKmPerHour)
             {
-                var acceleration = (endSpeed - startSpeed) / time;
-
-                return this.TotalWeight * acceleration;
+                return this.TotalWeight * segment.Acceleration;
             }
 
             return 0;

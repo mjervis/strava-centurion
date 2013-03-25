@@ -1,12 +1,14 @@
-﻿// -----------------------------------------------------------------------
-// <copyright file="TcxPointTests.cs" company="FuckingBrit.com">
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="DataPointTests.cs" company="FuckingBrit.com">
 //   Copyright (c) 2013 FuckingBrit.com
-//   Source code available under a total unrestrictive, free, it's all yours licence.
-//   Use at your own risk.
 // </copyright>
-// -----------------------------------------------------------------------
+// <summary>
+//   Source code available under a total unrestrictive, free, it's all yours licence.
+//   Use at your own risk.   
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
-namespace Strava_Centurion_Tests
+namespace Strava_Centurion_Tests_2010
 {
     using System;
 

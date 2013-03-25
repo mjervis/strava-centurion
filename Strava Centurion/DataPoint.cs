@@ -82,6 +82,8 @@ namespace Strava_Centurion
             }
         }
 
+        // TODO: this should be a new Speed data type to encapsulate MPH, MPS, KPS units.
+
         /// <summary>
         /// Gets the speed in kilometers per hour.
         /// </summary>

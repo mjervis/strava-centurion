@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataSegmentTests.cs" />
     <Compile Include="DataPointTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TcxNodeTests.cs" />
