@@ -71,11 +71,11 @@ namespace Strava_Centurion
         /// <summary>
         /// Gets the speed along the segment.
         /// </summary>
-        public double Speed
+        public Speed Speed
         {
             get
             {
-                return this.Distance / this.ElapsedTime;
+                return new Speed(this.Distance / this.ElapsedTime);
             }
         }
 
@@ -91,14 +91,13 @@ namespace Strava_Centurion
         }
 
         /// <summary>
-        /// Gets the acceleration between the start and end points of the segment.
+        /// Gets the acceleration between the start and end points of the segment in m/s/s.
         /// </summary>
         public double Acceleration
         {
             get
             {
-                // TODO: Km Per Hour?? Is this right?  M Per Sec perhaps?  Should really create a speed data type and not have to worry.
-                return (this.End.SpeedInKmPerHour - this.Start.SpeedInKmPerHour) / this.ElapsedTime;       
+                return (this.End.Speed.MetersPerSecond - this.Start.Speed.MetersPerSecond) / this.ElapsedTime;       
             }
         }
     }

@@ -91,7 +91,7 @@ namespace Strava_Centurion
         {
             // TODO: csv output should probably be abstracted away
             // TODO: this should just be an output of some sort - encapsulate the formatting.
-            this.Csv.AppendFormat("{0},{1},{2},{3},", segment.Distance, segment.Gradient, segment.ElapsedTime, segment.Speed);
+            this.Csv.AppendFormat("{0},{1},{2},{3},", segment.Distance, segment.Gradient, segment.ElapsedTime, segment.Speed.MetersPerSecond);
 
             // TODO: not convinced
             if (segment.Cadence <= 0)
@@ -107,7 +107,7 @@ namespace Strava_Centurion
 
                 var totalPower = rollingResistanceForce + accelerationForce + hillForce + windForce;
 
-                segment.End.PowerInWatts = totalPower * segment.Speed;
+                segment.End.PowerInWatts = totalPower * segment.Speed.MetersPerSecond;
 
                 this.Csv.AppendFormat("{0},{1},{2},{3},{4},{5}", rollingResistanceForce, hillForce, windForce, accelerationForce, totalPower, segment.End.PowerInWatts).AppendLine();              
             }
@@ -122,7 +122,7 @@ namespace Strava_Centurion
         [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here, Newtons is a word.")]
         private double CalculateWindForce(DataSegment segment)
         {
-            return 0.5 * this.reality.EffectiveFrontalArea * this.reality.DragCoefficient * this.reality.AirDensity(segment.End.Altitude) * (segment.Speed * segment.Speed);
+            return 0.5 * this.reality.EffectiveFrontalArea * this.reality.DragCoefficient * this.reality.AirDensity(segment.End.Altitude) * (segment.Speed.MetersPerSecond * segment.Speed.MetersPerSecond);
         }
 
         /// <summary>
@@ -144,7 +144,7 @@ namespace Strava_Centurion
         private double CalculateAccelerationForce(DataSegment segment)
         {
             // TODO: Check this - Surely decelleration denotes power being taken from the system?
-            if (segment.End.SpeedInKmPerHour > segment.Start.SpeedInKmPerHour)
+            if (segment.End.Speed.MetersPerSecond > segment.Start.Speed.MetersPerSecond)
             {
                 return this.rider.WeightIncludingBike * segment.Acceleration;
             }

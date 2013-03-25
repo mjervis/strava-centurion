@@ -41,7 +41,7 @@ namespace Strava_Centurion
             this.Altitude = new Distance(node.GetAltitude());
             this.CadenceInRpm = node.GetCadence();
             this.TotalDistance = new Distance(node.GetTotalDistance());
-            this.SpeedInKmPerHour = node.GetSpeed();
+            this.Speed = new Speed(node.GetSpeed());
             this.HeartrateInBpm = node.GetHeartrate();
             this.Latitude = Angle.FromDegrees(node.GetLatitude());
             this.Longitude = Angle.FromDegrees(node.GetLongitude());
@@ -82,12 +82,10 @@ namespace Strava_Centurion
             }
         }
 
-        // TODO: this should be a new Speed data type to encapsulate MPH, MPS, KPS units.
-
         /// <summary>
-        /// Gets the speed in kilometers per hour.
+        /// Gets the speed.
         /// </summary>
-        public double SpeedInKmPerHour { get; private set; }
+        public Speed Speed { get; private set; }
 
         /// <summary>
         /// Gets the distance in meters.
