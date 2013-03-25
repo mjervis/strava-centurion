@@ -76,6 +76,7 @@ namespace Strava_Centurion
             for (var i = 1; i < file.TrackPoints.Count; i++)
             {
                 var end = file.TrackPoints[i];
+
                 // TODO: If start and end are at the same lat and long, then the segment needs to be start -> end + 1 and end needs power of end+1 adding :(
                 this.GeneratePower(new DataSegment(start, end));    // TODO: would we want to maintain a list of data segments instead?
 
@@ -130,7 +131,7 @@ namespace Strava_Centurion
         /// <returns>Force required.</returns>
         private double CalculateHillForce(DataSegment segment)
         {
-            return this.rider.WeightIncludingBike * this.reality.AccelerationDueToGravity * segment.Gradient;
+            return this.rider.WeightIncludingBike * segment.Gradient;
         }
 
         /// <summary>
@@ -155,7 +156,7 @@ namespace Strava_Centurion
         /// <returns>Returns the force.</returns>
         private double CalculateRollingResistanceForce()
         {
-            return this.rider.WeightIncludingBike * this.reality.AccelerationDueToGravity * this.reality.CoefficientOfRollingResistance;
+            return this.rider.WeightIncludingBike * this.reality.CoefficientOfRollingResistance;
         }
     }
 }
