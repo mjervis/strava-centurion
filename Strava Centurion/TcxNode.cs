@@ -66,7 +66,7 @@ namespace Strava_Centurion
         /// <summary>
         /// Xpath expression for TPX.
         /// </summary>
-        private const string TpxXpath = "tcx:Extensions/tcx:TPX";
+        private const string TpxXpath = "tcx:Extensions/ns3:TPX";
 
         /// <summary>
         /// Xpath expression for Extensions.
@@ -283,7 +283,7 @@ namespace Strava_Centurion
                 var ownerDocument = this.xmlNode.OwnerDocument;
                 if (ownerDocument != null)
                 {
-                    extensionsNode = ownerDocument.CreateElement("Extensions");
+                    extensionsNode = ownerDocument.CreateElement("Extensions", "http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2");
                 }
 
                 if (extensionsNode != null)
