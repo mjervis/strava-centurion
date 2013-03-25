@@ -97,6 +97,7 @@ namespace Strava_Centurion
         {
             get
             {
+                // TODO: Km Per Hour?? Is this right?  M Per Sec perhaps?  Should really create a speed data type and not have to worry.
                 return (this.End.SpeedInKmPerHour - this.Start.SpeedInKmPerHour) / this.ElapsedTime;       
             }
         }

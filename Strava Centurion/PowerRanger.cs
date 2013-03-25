@@ -24,14 +24,14 @@ namespace Strava_Centurion
         private readonly Reality reality;
 
         /// <summary>
+        /// The rider being analyzed.
+        /// </summary>
+        private readonly Rider rider;
+
+        /// <summary>
         /// Building a CSV of track point calculations for analysis.
         /// </summary>
         private readonly StringBuilder csv;
-
-        /// <summary>
-        /// Cache the previous speed for calculating acceleration between track points.
-        /// </summary>
-        private double previousSpeed;
 
         #endregion
 
@@ -39,43 +39,17 @@ namespace Strava_Centurion
         /// Initializes a new instance of the <see cref="PowerRanger"/> class. 
         /// Scoped in a given reality (physics constants, and time etc)
         /// </summary>
-        /// <param name="reality">
-        /// The reality in which we wish to range.
-        /// </param>
-        public PowerRanger(Reality reality)
+        /// <param name="reality">The reality in which we wish to range.</param>
+        /// <param name="rider">The rider being analyzed.</param>
+        public PowerRanger(Reality reality, Rider rider)
         {
-            this.RiderWeight = 76.7;
-            this.BikeWeight = 10.5;
+            this.reality = reality;
+            this.rider = rider;
 
-            this.reality = reality; // snigger;
-            this.csv =
-                new StringBuilder(
-                    "distance,gradient,time,speed,rollingpower,hillpower,windpower,accellerationpower,totalPower,wattage")
-                    .AppendLine();
+            this.csv = new StringBuilder("distance,gradient,time,speed,rollingpower,hillpower,windpower,accellerationpower,totalPower,wattage").AppendLine();
         }
 
         #region Properties.
-
-        /// <summary>
-        /// Gets or sets the weight in kg of the rider.
-        /// </summary>
-        public double RiderWeight { get; set; }
-
-        /// <summary>
-        /// Gets or sets the weight in kg of the bike
-        /// </summary>
-        public double BikeWeight { get; set; }
-
-        /// <summary>
-        /// Gets the total weight of rider plus bike.
-        /// </summary>
-        public double TotalWeight
-        {
-            get
-            {
-                return this.BikeWeight + this.RiderWeight;
-            }
-        }
 
         /// <summary>
         /// Gets the CSV of track point calculations for analysis.
@@ -96,25 +70,30 @@ namespace Strava_Centurion
         /// <param name="file">The <see cref="TcxFile"/> to Morph</param>
         public void Morph(TcxFile file)
         {
-            DataPoint start = file.TrackPoints[0];
+            var start = file.TrackPoints[0];
             start.PowerInWatts = 0.0;
-            for (int i = 1; i < file.TrackPoints.Count; i++)
+
+            for (var i = 1; i < file.TrackPoints.Count; i++)
             {
-                DataPoint end = file.TrackPoints[i];
-                this.GeneratePower(new DataSegment(start, end));    // TODO: would you want to maintain a list of data segments?
+                var end = file.TrackPoints[i];
+                this.GeneratePower(new DataSegment(start, end));    // TODO: would we want to maintain a list of data segments instead?
+
                 start = end;
             }
         }
 
         /// <summary>
         /// Generate the power taken to move from <see cref="DataPoint"/> to <see cref="DataPoint"/> and output
-        /// to CSV in the format of distance,gradient,time,speed,rollingpower,hillpower,windpower,accellerationpower,totalPower,wattage
+        /// to CSV in the format of distance,gradient,time,speed,rolling power,hill power,wind power,acceleration power,total Power,wattage
         /// </summary>
         /// <param name="segment">The <see cref="DataSegment"/> the rider has ridden.</param>
         private void GeneratePower(DataSegment segment)
         {
+            // TODO: csv output should probably be abstracted away
+            // TODO: this should just be an output of some sort - encapsulate the formatting.
             this.Csv.AppendFormat("{0},{1},{2},{3},", segment.Distance, segment.Gradient, segment.ElapsedTime, segment.Speed);
 
+            // TODO: not convinced
             if (segment.Cadence <= 0)
             {
                 this.Csv.AppendFormat("{0},{1},{2},{3},{4},{5}", 0, 0, 0, 0, 0, 0).AppendLine();
@@ -151,25 +130,23 @@ namespace Strava_Centurion
         /// to gravity given the gradient of the hill.
         /// </summary>
         /// <param name="segment">The segment.</param>
-        /// <returns>Force required in Newtons.</returns>
-        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here, Newtons is a word.")]
+        /// <returns>Force required.</returns>
         private double CalculateHillForce(DataSegment segment)
         {
-            return this.TotalWeight * this.reality.AccelerationDueToGravity * segment.Gradient;
+            return this.rider.WeightIncludingBike * this.reality.AccelerationDueToGravity * segment.Gradient;
         }
 
         /// <summary>
         /// Calculate the force required to accelerate from a start speed to an end speed.
         /// </summary>
         /// <param name="segment">The data segment</param>
-        /// <returns>Force required in Newtons.</returns>
-        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here, Newtons is a word.")]
+        /// <returns>Force required.</returns>
         private double CalculateAccelerationForce(DataSegment segment)
         {
             // TODO: Check this - Surely decelleration denotes power being taken from the system?
             if (segment.End.SpeedInKmPerHour > segment.Start.SpeedInKmPerHour)
             {
-                return this.TotalWeight * segment.Acceleration;
+                return this.rider.WeightIncludingBike * segment.Acceleration;
             }
 
             return 0;
@@ -178,9 +155,10 @@ namespace Strava_Centurion
         /// <summary>
         /// Gets the force of rolling resistance based on weight, gravity and coefficient of rolling resistance.
         /// </summary>
+        /// <returns>Returns the force.</returns>
         private double CalculateRollingResistanceForce()
         {
-            return this.TotalWeight * this.reality.AccelerationDueToGravity * this.reality.CoefficientOfRollingResistance;
+            return this.rider.WeightIncludingBike * this.reality.AccelerationDueToGravity * this.reality.CoefficientOfRollingResistance;
         }
     }
 }
