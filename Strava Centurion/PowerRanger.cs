@@ -91,26 +91,22 @@ namespace Strava_Centurion
         {
             // TODO: csv output should probably be abstracted away
             // TODO: this should just be an output of some sort - encapsulate the formatting.
-            this.Csv.AppendFormat("{0},{1},{2},{3},", segment.Distance, segment.Gradient, segment.ElapsedTime, segment.Speed.MetersPerSecond);
+            this.Csv.AppendFormat("{0},{1},{2},{3},", segment.Distance.Metres, segment.Gradient, segment.ElapsedTime, segment.Speed.MetersPerSecond);
 
-            // TODO: not convinced
-            if (segment.Cadence <= 0)
+            var rollingResistanceForce = this.CalculateRollingResistanceForce();
+            var accelerationForce = this.CalculateAccelerationForce(segment);
+            var hillForce = this.CalculateHillForce(segment);
+            var windForce = this.CalculateWindForce(segment);
+
+            var totalPower = rollingResistanceForce + accelerationForce + hillForce + windForce;
+            if (totalPower < 0.0)
             {
-                this.Csv.AppendFormat("{0},{1},{2},{3},{4},{5}", 0, 0, 0, 0, 0, 0).AppendLine();
+                totalPower = 0.0; // can't do negative power.
             }
-            else
-            {
-                var rollingResistanceForce = this.CalculateRollingResistanceForce();
-                var accelerationForce = this.CalculateAccelerationForce(segment);
-                var hillForce = this.CalculateHillForce(segment);
-                var windForce = this.CalculateWindForce(segment);
 
-                var totalPower = rollingResistanceForce + accelerationForce + hillForce + windForce;
+            segment.End.PowerInWatts = totalPower * segment.Speed.MetersPerSecond;
 
-                segment.End.PowerInWatts = totalPower * segment.Speed.MetersPerSecond;
-
-                this.Csv.AppendFormat("{0},{1},{2},{3},{4},{5}", rollingResistanceForce, hillForce, windForce, accelerationForce, totalPower, segment.End.PowerInWatts).AppendLine();              
-            }
+            this.Csv.AppendFormat("{0},{1},{2},{3},{4},{5}", rollingResistanceForce, hillForce, windForce, accelerationForce, totalPower, segment.End.PowerInWatts).AppendLine();              
         }
 
         /// <summary>
