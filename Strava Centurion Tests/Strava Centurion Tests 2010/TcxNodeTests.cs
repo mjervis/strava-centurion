@@ -1,13 +1,14 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="TcxNodeTests.cs" company="">
-//   
+// <copyright file="TcxNodeTests.cs" company="RuPc">
+//   Source code available under a total unrestrictive, free, it's all yours licence.
+//   Use at your own risk.
 // </copyright>
 // <summary>
 //   A test fixture for testing the garmin node.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Strava_Centurion_Tests
+namespace Strava_Centurion_Tests_2010
 {
     using System.Xml;
 

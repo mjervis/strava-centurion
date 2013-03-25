@@ -83,6 +83,7 @@
     <Compile Include="Reality.cs" />
     <Compile Include="Rider.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="Speed.cs" />
     <Compile Include="TcxFile.cs" />
     <Compile Include="TcxNode.cs" />
     <Compile Include="DataPoint.cs" />
