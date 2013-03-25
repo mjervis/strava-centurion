@@ -161,7 +161,18 @@ namespace Strava_Centurion
              *  we have lots of x, y and h.
              *  Gradient, as a ration is y/x 
              */
-            return this.AscentToPoint(other) / this.HaversineDistanceToPoint(other);
+            double ret;
+            double distance = this.HaversineDistanceToPoint(other);
+            if (Math.Abs(distance - 0.0) < 0.0001)
+            {
+                ret = 0.0; // todo: need to sort out not moving a point better than this, see comment in PowerRanger.
+            }
+            else
+            {
+                ret = this.AscentToPoint(other) / distance;   
+            }
+
+            return ret;
         }
 
         /// <summary>

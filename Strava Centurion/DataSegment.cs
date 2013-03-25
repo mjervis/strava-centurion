@@ -75,6 +75,7 @@ namespace Strava_Centurion
         {
             get
             {
+                // todo: And if distance = 0, then speed is NaN, so it'd need to be speed at the start point?
                 return new Speed(this.Distance / this.ElapsedTime);
             }
         }
