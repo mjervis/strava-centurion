@@ -141,13 +141,7 @@ namespace Strava_Centurion
         /// <returns>Force required.</returns>
         public Force CalculateAccelerationForce(DataSegment segment)
         {
-            // TODO: Check this - Surely decelleration denotes power being taken from the system?
-            if (segment.End.Speed.MetersPerSecond > segment.Start.Speed.MetersPerSecond)
-            {
-                return new Force(this.rider.MassIncludingBike * segment.Acceleration);
-            }
-
-            return Force.Zero;
+            return new Force(this.rider.MassIncludingBike * segment.Acceleration);
         }
 
         /// <summary>
