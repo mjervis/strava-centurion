@@ -186,7 +186,7 @@ namespace Strava_Centurion
         public double AirDensity(double altitude)
         {
             double density;
-            density = (this.PressureAtAltitude(altitude) * MolecularWeightOfDryAir) / (SpeicificGasConstantDryAir * this.CelciusToKelvin(this.Temperature) * 1000);
+            density = (this.PressureAtAltitude(altitude) * MolecularWeightOfDryAir) / (GasConstant * this.CelciusToKelvin(this.Temperature));
             return density;
         }
 
