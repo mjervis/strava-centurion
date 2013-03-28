@@ -30,9 +30,9 @@ namespace Strava_Centurion
         public const double SpeicificGasConstantDryAir = 287.05;
 
         /// <summary>
-        /// Molecular Weight of Dry Air in gram/mole.
+        /// Molecular Weight of Dry Air in kg/mole.
         /// </summary>
-        public const double MolecularWeightOfDryAir = 28.9644;
+        public const double MolecularWeightOfDryAir = 0.0289644;
 
         /// <summary>
         /// The Specific Constant for Water Vapor.
@@ -49,12 +49,12 @@ namespace Strava_Centurion
         /// <summary>
         /// The gas constant.
         /// </summary>
-        public const double GasConstant = 8.31432;
+        public const double GasConstant = 8.31447;
 
         /// <summary>
-        /// The temperature lapse rate of the troposphere. In Degrees Kelvin a km.
+        /// The temperature lapse rate of the troposphere. In Degrees Kelvin a m.
         /// </summary>
-        public const double TemperatureLapseRate = 6.5;
+        public const double TemperatureLapseRate = 0.0065;
 
         /// <summary>
         /// Standard temperature at sea level in degrees Kelvin.
@@ -199,13 +199,13 @@ namespace Strava_Centurion
         /// <returns>
         /// Pressure in Pa
         /// </returns>
-        private double PressureAtAltitude(double altitude)
+        public double PressureAtAltitude(double altitude)
         {
             double gM = this.AccelerationDueToGravity * MolecularWeightOfDryAir;
             double RL = SpecificGasConstanthWaterVapor * TemperatureLapseRate;
             double gMOverRL = gM / RL;
 
-            altitude = altitude / 1000; // meters to km;
+            altitude = altitude / 1000.0; // meters to km;
             double LH = TemperatureLapseRate * altitude;
             double pressure = SeaLevelStandardPressure * Math.Pow(1.0 - (LH / SeaLevelStandardTemp), gMOverRL);
             return pressure; // pa

@@ -50,6 +50,7 @@
     <Compile Include="DataPointTests.cs" />
     <Compile Include="PowerRangerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RealityTests.cs" />
     <Compile Include="SpeedTests.cs" />
     <Compile Include="TcxNodeTests.cs" />
   </ItemGroup>
