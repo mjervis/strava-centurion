@@ -131,7 +131,7 @@ namespace Strava_Centurion
         /// <returns>Force required.</returns>
         public Force CalculateHillForce(DataSegment segment)
         {
-            return new Force(this.rider.MassIncludingBike * segment.Gradient);
+            return new Force(this.rider.MassIncludingBike * this.reality.AccelerationDueToGravity * segment.Gradient);
         }
 
         /// <summary>
