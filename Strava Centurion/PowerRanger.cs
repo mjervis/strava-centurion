@@ -108,7 +108,7 @@ namespace Strava_Centurion
 
             segment.End.PowerInWatts = totalPower * segment.Speed.MetersPerSecond;
 
-            this.Csv.AppendFormat("{0},{1},{2},{3},{4},{5}", rollingResistanceForce, hillForce, windForce, accelerationForce, totalPower, segment.End.PowerInWatts).AppendLine();              
+            this.Csv.AppendFormat("{0},{1},{2},{3},{4},{5}", rollingResistanceForce.Newtons, hillForce.Newtons, windForce.Newtons, accelerationForce.Newtons, totalPower.Newtons, segment.End.PowerInWatts).AppendLine();              
         }
 
         /// <summary>
