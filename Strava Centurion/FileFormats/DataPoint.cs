@@ -78,14 +78,14 @@ namespace Strava_Centurion
             set
             {
                 this.powerInWatts = value;
-                this.node.SetPower(this.powerInWatts);
+                this.node.SetPower(Math.Round(this.powerInWatts, 0));
             }
         }
 
         /// <summary>
         /// Gets the speed.
         /// </summary>
-        public Speed Speed { get; private set; }
+        public Speed Speed { get; set; }
 
         /// <summary>
         /// Gets the distance in meters.

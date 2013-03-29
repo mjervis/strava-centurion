@@ -9,6 +9,8 @@
 
 namespace Strava_Centurion
 {
+    using System;
+
     /// <summary>
     /// A segment between two data points.
     /// </summary>
@@ -23,6 +25,10 @@ namespace Strava_Centurion
         {
             this.Start = start;
             this.End = end;
+            if ((end.Speed.MetersPerSecond == 0.0) && (this.Speed.MetersPerSecond > 0.0))
+            {
+                end.Speed = this.Speed;   
+            }
         }
 
         /// <summary>
@@ -75,8 +81,14 @@ namespace Strava_Centurion
         {
             get
             {
-                // todo: And if distance = 0, then speed is NaN, so it'd need to be speed at the start point?
-                return new Speed(this.Distance / this.ElapsedTime);
+                Speed speed = new Speed(0.0);
+                
+                if (Math.Abs(this.Distance - 0.0) > 0.0)
+                {
+                    speed = new Speed(this.Distance / this.ElapsedTime);    
+                }
+
+                return speed;
             }
         }
 
