@@ -22,9 +22,9 @@ namespace Strava_Centurion
         private readonly INode node;
 
         /// <summary>
-        /// The power in watts.
+        /// The power.
         /// </summary>
-        private double powerInWatts;
+        private Power power;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DataPoint"/> class. 
@@ -45,7 +45,7 @@ namespace Strava_Centurion
             this.HeartrateInBpm = node.GetHeartrate();
             this.Latitude = Angle.FromDegrees(node.GetLatitude());
             this.Longitude = Angle.FromDegrees(node.GetLongitude());
-            this.PowerInWatts = node.GetPower();
+            this.Power = new Power(node.GetPower());
         }
 
         #region Properties.    
@@ -68,17 +68,17 @@ namespace Strava_Centurion
         /// <summary>
         /// Gets or sets the power in watts.
         /// </summary>
-        public double PowerInWatts
+        public Power Power
         {
             get
             {
-                return this.powerInWatts;
+                return this.power;
             }
 
             set
             {
-                this.powerInWatts = value;
-                this.node.SetPower(Math.Round(this.powerInWatts, 0));
+                this.power = value;
+                this.node.SetPower(Math.Round(this.power.Watts, 0));
             }
         }
 

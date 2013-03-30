@@ -16,6 +16,7 @@ namespace Strava_Centurion
     using System.IO;
     using System.Windows.Forms;
 
+    using Strava_Centurion.FileFormats;
     using Strava_Centurion.Properties;
 
     /// <summary>
@@ -216,16 +217,17 @@ namespace Strava_Centurion
         {
             var ranger = new PowerRanger(this.reality, new Rider(double.Parse(this.riderWeight.Text), double.Parse(this.bikeWeight.Text)));
 
-            ranger.Morph(this.tcxFile);
+            var segments = ranger.Morph(this.tcxFile);
 
             this.tcxFile.SaveAs(this.OutputFilename("tcx"));
 
-            if (csvOut.Checked)
+            if (this.csvOut.Checked)
             {
-                StreamWriter tf = File.CreateText(this.OutputFilename("csv"));
-                tf.Write(ranger.Csv.ToString());
-                tf.Flush();
-                tf.Close();
+                using (var stream = File.Open(this.OutputFilename("csv"), FileMode.CreateNew))
+                {
+                    var dataSegmentWriter = new CsvDataSegmentWriter(stream);
+                    dataSegmentWriter.Write(segments);
+                }
             }
         }
 

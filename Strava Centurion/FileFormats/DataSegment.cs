@@ -81,7 +81,7 @@ namespace Strava_Centurion
         {
             get
             {
-                Speed speed = new Speed(0.0);
+                var speed = new Speed(0.0);
                 
                 if (Math.Abs(this.Distance - 0.0) > 0.0)
                 {
@@ -111,6 +111,42 @@ namespace Strava_Centurion
             get
             {
                 return (this.End.Speed.MetersPerSecond - this.Start.Speed.MetersPerSecond) / this.ElapsedTime;       
+            }
+        }
+
+        // TODO: could some of these properties have guard added to them...
+        // TODO:   can rolling resistance ever be a negative power?
+        // TODO:   can acceleration ever be negative power for a positive acceleration, and vice-versa
+        // TODO:   can power ever be negative for a positive gradient, and vice-versa
+
+        /// <summary>
+        /// Gets or sets the rolling resistance force.
+        /// </summary>
+        public Force RollingResistanceForce { get; set; }
+
+        /// <summary>
+        /// Gets or sets the acceleration force.
+        /// </summary>
+        public Force AccelerationForce { get; set; }
+
+        /// <summary>
+        /// Gets or sets the hill force.
+        /// </summary>
+        public Force HillForce { get; set; }
+
+        /// <summary>
+        /// Gets or sets the wind force.
+        /// </summary>
+        public Force WindForce { get; set; }
+
+        /// <summary>
+        /// Gets the total force.
+        /// </summary>
+        public Force TotalForce
+        {
+            get
+            {
+                return new Force(Math.Max(0.0, this.RollingResistanceForce + this.AccelerationForce + this.HillForce + this.WindForce));
             }
         }
     }

@@ -67,7 +67,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FileFormats\CsvDataSegmentWriter.cs" />
+    <Compile Include="FileFormats\IDataSegmentReader.cs" />
+    <Compile Include="FileFormats\IDataSegmentWriter.cs" />
     <Compile Include="Physics\Angle.cs" />
+    <Compile Include="Physics\Power.cs" />
     <Compile Include="Physics\Force.cs" />
     <Compile Include="FileFormats\DataSegment.cs" />
     <Compile Include="Physics\Distance.cs" />

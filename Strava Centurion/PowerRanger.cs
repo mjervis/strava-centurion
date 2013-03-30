@@ -8,7 +8,9 @@
 
 namespace Strava_Centurion
 {
+    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using System.IO;
     using System.Text;
 
     /// <summary>
@@ -68,47 +70,33 @@ namespace Strava_Centurion
         /// Calculate power over a <see cref="TcxFile"/>.
         /// </summary>
         /// <param name="file">The <see cref="TcxFile"/> to Morph</param>
-        public void Morph(TcxFile file)
+        public IEnumerable<DataSegment> Morph(TcxFile file)
         {
             var start = file.TrackPoints[0];
-            start.PowerInWatts = 0.0;
+            start.Power = Power.Zero;
+
+            var segments = new List<DataSegment>();
 
             for (var i = 1; i < file.TrackPoints.Count; i++)
             {
                 var end = file.TrackPoints[i];
 
                 // TODO: If start and end are at the same lat and long, then the segment needs to be start -> end + 1 and end needs power of end+1 adding :(
-                this.GeneratePower(new DataSegment(start, end));    // TODO: would we want to maintain a list of data segments instead?
+                var segment = new DataSegment(start, end);
+
+                segment.RollingResistanceForce = this.CalculateRollingResistanceForce();
+                segment.AccelerationForce = this.CalculateAccelerationForce(segment);
+                segment.HillForce = this.CalculateHillForce(segment);
+                segment.WindForce = this.CalculateWindForce(segment);
+
+                segment.End.Power = new Power(segment.TotalForce * segment.Speed.MetersPerSecond);
+
+                segments.Add(segment);
 
                 start = end;
             }
-        }
 
-        /// <summary>
-        /// Generate the power taken to move from <see cref="DataPoint"/> to <see cref="DataPoint"/> and output
-        /// to CSV in the format of distance,gradient,time,speed,rolling power,hill power,wind power,acceleration power,total Power,wattage
-        /// </summary>
-        /// <param name="segment">The <see cref="DataSegment"/> the rider has ridden.</param>
-        public void GeneratePower(DataSegment segment)
-        {
-            // TODO: csv output should probably be abstracted away
-            // TODO: this should just be an output of some sort - encapsulate the formatting.
-            this.Csv.AppendFormat("{0},{1},{2},{3},", segment.Distance.Metres, segment.Gradient, segment.ElapsedTime, segment.Speed.MetersPerSecond);
-
-            var rollingResistanceForce = this.CalculateRollingResistanceForce();
-            var accelerationForce = this.CalculateAccelerationForce(segment);
-            var hillForce = this.CalculateHillForce(segment);
-            var windForce = this.CalculateWindForce(segment);
-
-            var totalPower = rollingResistanceForce + accelerationForce + hillForce + windForce;
-            if (totalPower < 0.0)
-            {
-                totalPower = Force.Zero; // can't do negative power.
-            }
-
-            segment.End.PowerInWatts = totalPower * segment.Speed.MetersPerSecond;
-
-            this.Csv.AppendFormat("{0},{1},{2},{3},{4},{5}", rollingResistanceForce.Newtons, hillForce.Newtons, windForce.Newtons, accelerationForce.Newtons, totalPower.Newtons, segment.End.PowerInWatts).AppendLine();              
+            return segments;
         }
 
         /// <summary>
