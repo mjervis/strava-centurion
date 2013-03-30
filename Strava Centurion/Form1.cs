@@ -214,9 +214,7 @@ namespace Strava_Centurion
         /// <param name="e">Standard windows event arguments.</param>
         private void PowerCalcThreadDoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
-            // var ranger = new PowerRanger(this.reality, new Rider(double.Parse(this.riderWeight.Text), double.Parse(this.bikeWeight.Text)));
-
-            var ranger = new PowerRanger(this.reality, new Rider(76.7, 10.5));
+            var ranger = new PowerRanger(this.reality, new Rider(double.Parse(this.riderWeight.Text), double.Parse(this.bikeWeight.Text)));
 
             ranger.Morph(this.tcxFile);
 
