@@ -14,8 +14,6 @@ namespace Strava_Centurion_Tests_2010
 
     using NUnit.Framework;
 
-    using Strava_Centurion;
-
     /// <summary>
     /// A test fixture for testing the garmin node.
     /// </summary>
@@ -43,22 +41,6 @@ namespace Strava_Centurion_Tests_2010
             this.xmlNamespaceManager = new XmlNamespaceManager(this.xmlDocument.NameTable);
             this.xmlNamespaceManager.AddNamespace("tcx", "http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2");
             this.xmlNamespaceManager.AddNamespace("ns3", "http://www.garmin.com/xmlschemas/ActivityExtension/v2");          
-        }
-
-        /// <summary>
-        /// A test to ensure a garmin node can be constructed without exception.
-        /// </summary>
-        [Test]
-        public void CanConstruct()
-        {
-            using (var textReader = new XmlTextReader("<SOME VALID TCX>"))
-            {
-                this.xmlDocument.Load(textReader);
-            }
-
-            var node = new TcxNode(this.xmlDocument.SelectSingleNode("TODO"), this.xmlNamespaceManager);
-            
-            Assert.IsNotNull(node);
         }
 
         [Test]

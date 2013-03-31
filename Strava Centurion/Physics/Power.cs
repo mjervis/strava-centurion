@@ -40,6 +40,16 @@ namespace Strava_Centurion
         }
 
         /// <summary>
+        /// Gets an unknown power.
+        /// </summary>
+        public static Power Unknown
+        {
+            get
+            {
+                return new Power(double.NaN);
+            }
+        }
+        /// <summary>
         /// Implicit conversion to a double.
         /// </summary>
         /// <param name="power">The power to convert.</param>

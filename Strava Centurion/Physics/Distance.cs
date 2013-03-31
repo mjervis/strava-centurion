@@ -31,6 +31,28 @@ namespace Strava_Centurion
         }
 
         /// <summary>
+        /// Gets a distance of zero.
+        /// </summary>
+        public static Distance Zero
+        {
+            get
+            {
+                return new Distance(0);
+            }
+        }
+
+        /// <summary>
+        /// Gets an unknown distance.
+        /// </summary>
+        public static Distance Unknown
+        {
+            get
+            {
+                return new Distance(double.NaN);
+            }
+        }
+
+        /// <summary>
         /// Gets the distance in kilometers.
         /// </summary>
         public double Kilometres

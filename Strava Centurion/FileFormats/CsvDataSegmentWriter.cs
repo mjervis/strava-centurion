@@ -35,7 +35,7 @@ namespace Strava_Centurion.FileFormats
         /// A method to write out data points.
         /// </summary>
         /// <param name="dataSegments">The data segments to write.</param>
-        public void Write(IEnumerable<DataSegment> dataSegments)
+        public void Write(List<DataSegment> dataSegments)
         {
             using (var streamWriter = new StreamWriter(this.stream))
             {
@@ -45,7 +45,7 @@ namespace Strava_Centurion.FileFormats
                 {
                     streamWriter.WriteLine(string.Join(
                         ",",
-                        segment.Distance.Metres,
+                        segment.Length.Metres,
                         segment.Gradient,
                         segment.ElapsedTime,
                         segment.Speed.MetersPerSecond,
@@ -54,9 +54,16 @@ namespace Strava_Centurion.FileFormats
                         segment.WindForce.Newtons,
                         segment.AccelerationForce.Newtons,
                         segment.TotalForce.Newtons,
-                        segment.End.Power.Watts));
+                        segment.Power.Watts));
                 }
             }
+        }
+
+        /// <summary>
+        /// Disposes of this data segment writer.
+        /// </summary>
+        public void Dispose()
+        {
         }
     }
 }

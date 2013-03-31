@@ -70,6 +70,8 @@
     <Compile Include="FileFormats\CsvDataSegmentWriter.cs" />
     <Compile Include="FileFormats\IDataSegmentReader.cs" />
     <Compile Include="FileFormats\IDataSegmentWriter.cs" />
+    <Compile Include="FileFormats\TcxDataSegmentReader.cs" />
+    <Compile Include="FileFormats\TcxDataSegmentWriter.cs" />
     <Compile Include="Physics\Angle.cs" />
     <Compile Include="Physics\Power.cs" />
     <Compile Include="Physics\Force.cs" />
@@ -81,16 +83,12 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="FileFormats\INode.cs" />
-    <Compile Include="PowerRanger.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Physics\Reality.cs" />
     <Compile Include="Physics\Rider.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Physics\Speed.cs" />
-    <Compile Include="FileFormats\TcxFile.cs" />
-    <Compile Include="FileFormats\TcxNode.cs" />
     <Compile Include="FileFormats\DataPoint.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>

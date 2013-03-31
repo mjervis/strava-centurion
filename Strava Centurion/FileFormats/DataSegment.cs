@@ -25,10 +25,11 @@ namespace Strava_Centurion
         {
             this.Start = start;
             this.End = end;
-            if ((end.Speed.MetersPerSecond == 0.0) && (this.Speed.MetersPerSecond > 0.0))
-            {
-                end.Speed = this.Speed;   
-            }
+
+            this.WindForce = Force.Zero;
+            this.AccelerationForce = Force.Zero;
+            this.HillForce = Force.Zero;
+            this.RollingResistanceForce = Force.Zero;
         }
 
         /// <summary>
@@ -42,13 +43,13 @@ namespace Strava_Centurion
         public DataPoint End { get; private set; }
 
         /// <summary>
-        /// Gets the distance between the start and end point of this segment.
+        /// Gets the length of this segment
         /// </summary>
-        public Distance Distance
+        public Distance Length
         {
             get
             {
-                return this.Start.DistanceToPoint(this.End);
+                return new Distance(Math.Abs(this.Start.DistanceToPoint(this.End).Metres));
             }
         }
 
@@ -81,14 +82,17 @@ namespace Strava_Centurion
         {
             get
             {
-                var speed = new Speed(0.0);
-                
-                if (Math.Abs(this.Distance - 0.0) > 0.0)
+                if (double.IsNaN(this.Start.Speed.MetersPerSecond) || double.IsNaN(this.End.Speed.MetersPerSecond))
                 {
-                    speed = new Speed(this.Distance / this.ElapsedTime);    
+                    if (this.Length <= 0.0 || this.ElapsedTime <= 0.0)
+                    {
+                        return Speed.Unknown;
+                    }
+
+                    return new Speed(this.Length / this.ElapsedTime);
                 }
 
-                return speed;
+                return new Speed((this.Start.Speed.MetersPerSecond + this.End.Speed.MetersPerSecond) / 2.0);
             }
         }
 
@@ -99,7 +103,7 @@ namespace Strava_Centurion
         {
             get
             {
-                return (this.Start.CadenceInRpm + this.End.CadenceInRpm) / 2;
+                return (this.Start.CadenceInRpm + this.End.CadenceInRpm) / 2.0;
             }
         }
 
@@ -110,34 +114,34 @@ namespace Strava_Centurion
         {
             get
             {
+                if (double.IsNaN(this.Start.Speed.MetersPerSecond) || double.IsNaN(this.End.Speed.MetersPerSecond))
+                {
+                    throw new Exception("TODO - need to calculate this in an alternative way");
+                }
+
                 return (this.End.Speed.MetersPerSecond - this.Start.Speed.MetersPerSecond) / this.ElapsedTime;       
             }
         }
 
-        // TODO: could some of these properties have guard added to them...
-        // TODO:   can rolling resistance ever be a negative power?
-        // TODO:   can acceleration ever be negative power for a positive acceleration, and vice-versa
-        // TODO:   can power ever be negative for a positive gradient, and vice-versa
+        /// <summary>
+        /// Gets the rolling resistance force.
+        /// </summary>
+        public Force RollingResistanceForce { get; private set; }
 
         /// <summary>
-        /// Gets or sets the rolling resistance force.
+        /// Gets the acceleration force.
         /// </summary>
-        public Force RollingResistanceForce { get; set; }
+        public Force AccelerationForce { get; private set; }
 
         /// <summary>
-        /// Gets or sets the acceleration force.
+        /// Gets the hill force.
         /// </summary>
-        public Force AccelerationForce { get; set; }
+        public Force HillForce { get; private set; }
 
         /// <summary>
-        /// Gets or sets the hill force.
+        /// Gets the wind force.
         /// </summary>
-        public Force HillForce { get; set; }
-
-        /// <summary>
-        /// Gets or sets the wind force.
-        /// </summary>
-        public Force WindForce { get; set; }
+        public Force WindForce { get; private set; }
 
         /// <summary>
         /// Gets the total force.
@@ -146,8 +150,82 @@ namespace Strava_Centurion
         {
             get
             {
-                return new Force(Math.Max(0.0, this.RollingResistanceForce + this.AccelerationForce + this.HillForce + this.WindForce));
+                return new Force(Math.Max(0.0, this.WindForce + this.AccelerationForce + this.HillForce + this.RollingResistanceForce));
             }
+        }
+
+        /// <summary>
+        /// Gets the power.
+        /// </summary>
+        public Power Power
+        {
+            get
+            {
+                return new Power(Math.Max(0.0, this.TotalForce * this.Speed.MetersPerSecond));   
+            }
+        }
+
+        /// <summary>
+        /// Calculates the forces based on a rider and reality.
+        /// </summary>
+        /// <param name="rider">The rider.</param>
+        /// <param name="reality">The reality.</param>
+        public void Calculate(Rider rider, Reality reality)
+        {
+            this.RollingResistanceForce = this.GetRollingResistanceForce(rider, reality);
+            this.AccelerationForce = this.GetAccelerationForce(rider);
+            this.HillForce = this.GetHillForce(rider, reality);
+            this.WindForce = this.GetWindForce(reality);
+        }
+
+        // TODO: could some of these methods have a guard added to them...
+        // TODO:   can rolling resistance ever be a negative power?
+        // TODO:   can acceleration ever be negative power for a positive acceleration, and vice-versa
+        // TODO:   can power ever be negative for a positive gradient, and vice-versa
+
+        /// <summary>
+        /// Gets the rolling resistance force.
+        /// </summary>
+        /// <param name="rider">The rider.</param>
+        /// <param name="reality">The reality.</param>
+        /// <returns>A force.</returns>
+        private Force GetRollingResistanceForce(Rider rider, Reality reality)
+        {
+            // weight = mass(kg's) * gravity(9.81 m/s2)
+            // c = rolling resistance coefficient
+            // resistance (newtons) = c * weight
+            return new Force(rider.MassIncludingBike * reality.AccelerationDueToGravity * reality.CoefficientOfRollingResistance);
+        }
+
+        /// <summary>
+        /// Gets the acceleration force.
+        /// </summary>
+        /// <param name="rider">The rider.</param>
+        /// <returns>A force.</returns>
+        private Force GetAccelerationForce(Rider rider)
+        {
+            return new Force(rider.MassIncludingBike * this.Acceleration);
+        }
+
+        /// <summary>
+        /// Gets or sets the hill force.
+        /// </summary>
+        /// <param name="rider">The rider.</param>
+        /// <param name="reality">The reality.</param>
+        /// <returns>A force.</returns>
+        private Force GetHillForce(Rider rider, Reality reality)
+        {
+            return new Force(rider.MassIncludingBike * reality.AccelerationDueToGravity * this.Gradient);
+        }
+
+        /// <summary>
+        /// Gets or sets the wind force.
+        /// </summary>
+        /// <param name="reality">The reality.</param>
+        /// <returns>A force.</returns>
+        private Force GetWindForce(Reality reality)
+        {
+            return new Force(0.5 * reality.EffectiveFrontalArea * reality.DragCoefficient * reality.AirDensity(this.End.Altitude) * (this.Speed.MetersPerSecond * this.Speed.MetersPerSecond));
         }
     }
 }

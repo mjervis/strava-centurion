@@ -28,11 +28,8 @@ namespace Strava_Centurion_Tests_2010
         public void CanConstructWithoutException()
         {
             // arrange
-            var mockNode1 = MockRepository.GenerateMock<INode>();
-            var mockDataPoint1 = MockRepository.GenerateMock<DataPoint>(mockNode1);
-
-            var mockNode2 = MockRepository.GenerateMock<INode>();
-            var mockDataPoint2 = MockRepository.GenerateMock<DataPoint>(mockNode2);
+            var mockDataPoint1 = MockRepository.GenerateMock<DataPoint>();
+            var mockDataPoint2 = MockRepository.GenerateMock<DataPoint>();
 
             // act
             var segment = new DataSegment(mockDataPoint1, mockDataPoint2);

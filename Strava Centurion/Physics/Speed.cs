@@ -37,6 +37,28 @@ namespace Strava_Centurion
     public class Speed
     {
         /// <summary>
+        /// Gets a speed of zero.
+        /// </summary>
+        public static Speed Zero
+        {
+            get
+            {
+                return new Speed(0);
+            }
+        }
+
+        /// <summary>
+        /// Gets an unknown speed.
+        /// </summary>
+        public static Speed Unknown
+        {
+            get
+            {
+                return new Speed(double.NaN);
+            }
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Speed"/> class with the given speed in m/s.
         /// </summary>
         /// <param name="metersPerSecond">

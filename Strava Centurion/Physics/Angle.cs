@@ -33,6 +33,28 @@ namespace Strava_Centurion
         }
 
         /// <summary>
+        /// Gets an angle of zero.
+        /// </summary>
+        public static Angle Zero
+        {
+            get
+            {
+                return new Angle(0);
+            }
+        }
+
+        /// <summary>
+        /// Gets an unknown angle.
+        /// </summary>
+        public static Angle Unknown
+        {
+            get
+            {
+                return new Angle(double.NaN);
+            }
+        }
+
+        /// <summary>
         /// Gets the angle in degrees.
         /// </summary>
         public double Degrees

@@ -42,6 +42,17 @@ namespace Strava_Centurion
         }
 
         /// <summary>
+        /// Gets an unknown force.
+        /// </summary>
+        public static Force Unknown
+        {
+            get
+            {
+                return new Force(double.NaN);
+            }
+        }
+
+        /// <summary>
         /// Implicit conversion to a double.
         /// </summary>
         /// <param name="force">The force to convert.</param>

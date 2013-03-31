@@ -12,6 +12,8 @@
 namespace Strava_Centurion
 {
     using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Globalization;
     using System.IO;
     using System.Windows.Forms;
@@ -24,16 +26,15 @@ namespace Strava_Centurion
     /// </summary>
     public partial class MainForm : Form
     {
-        #region Private Members
+        /// <summary>
+        /// The data segments.
+        /// </summary>
+        private List<DataSegment> dataSegments;
+
         /// <summary>
         /// Full, safe path to the selected TCX file.
         /// </summary>
         private string fullFileName = string.Empty;
-
-        /// <summary>
-        /// The TCX file.
-        /// </summary>
-        private TcxFile tcxFile;
 
         /// <summary>
         /// The reality in which we operate.
@@ -49,7 +50,6 @@ namespace Strava_Centurion
         /// Hold the rider weight in kg for validating UI changes.
         /// </summary>
         private double cachedRiderWeight = 76.7;
-        #endregion
 
         #region App start and cleanup.
         /// <summary>
@@ -171,9 +171,16 @@ namespace Strava_Centurion
         /// <param name="e">
         /// The e.
         /// </param>
-        private void FileParserThreadDoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        private void FileParserThreadDoWork(object sender, DoWorkEventArgs e)
         {
-            this.tcxFile = new TcxFile(this.fullFileName);
+            // read the original file
+            using (var stream = new FileStream(this.fullFileName, FileMode.Open))
+            {
+                using (var tcxDataSegmentReader = new TcxDataSegmentReader(stream))
+                {
+                    this.dataSegments = tcxDataSegmentReader.Read();
+                }
+            }
         }
 
         /// <summary>
@@ -185,10 +192,11 @@ namespace Strava_Centurion
         /// <param name="e">
         /// The e.
         /// </param>
-        private void FileParserThreadRunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        private void FileParserThreadRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            this.LogMessage(string.Format("File loaded ({0} trackpoints).", this.tcxFile.TrackPoints.Count));
-            this.buttonProcess.Enabled = this.tcxFile != null;
+            this.LogMessage(string.Format("File loaded ({0} segments).", this.dataSegments.Count));
+
+            this.buttonProcess.Enabled = (this.dataSegments != null) && (this.dataSegments.Count > 0);
         }
         #endregion
 
@@ -208,25 +216,42 @@ namespace Strava_Centurion
         }
 
         /// <summary>
-        /// Set the options needed on the <see cref="PowerRanger"/> and <see cref="Reality"/>,
-        /// then run the power calculations, optionally generating the output files.
+        /// The power calc thread do work.
         /// </summary>
-        /// <param name="sender">Standard windows event sender.</param>
-        /// <param name="e">Standard windows event arguments.</param>
-        private void PowerCalcThreadDoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
+        private void PowerCalcThreadDoWork(object sender, DoWorkEventArgs e)
         {
-            var ranger = new PowerRanger(this.reality, new Rider(double.Parse(this.riderWeight.Text), double.Parse(this.bikeWeight.Text)));
+            // calculate the power values.
+            var rider = new Rider(double.Parse(this.riderWeight.Text), double.Parse(this.bikeWeight.Text));
 
-            var segments = ranger.Morph(this.tcxFile);
+            foreach (var dataSegment in dataSegments)
+            {
+                dataSegment.Calculate(rider, this.reality);
+            }
 
-            this.tcxFile.SaveAs(this.OutputFilename("tcx"));
+            // save the updated tcx
+            using (var stream = new FileStream(this.OutputFilename("tcx"), FileMode.CreateNew))
+            {
+                using (var tcxDataSegmentWriter = new TcxDataSegmentWriter(stream))
+                {
+                    tcxDataSegmentWriter.Write(this.dataSegments);
+                }
+            }
 
+            // save the csv
             if (this.csvOut.Checked)
             {
                 using (var stream = File.Open(this.OutputFilename("csv"), FileMode.CreateNew))
                 {
-                    var dataSegmentWriter = new CsvDataSegmentWriter(stream);
-                    dataSegmentWriter.Write(segments);
+                    using (var dataSegmentWriter = new CsvDataSegmentWriter(stream))
+                    {
+                        dataSegmentWriter.Write(this.dataSegments);
+                    }
                 }
             }
         }

@@ -9,7 +9,6 @@
 namespace Strava_Centurion
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
 
     /// <summary>
     /// Represent a track point in a TCX file and methods for accessing it.
@@ -17,78 +16,51 @@ namespace Strava_Centurion
     public class DataPoint
     {
         /// <summary>
-        /// The node used to access the underlying storage.
-        /// </summary>
-        private readonly INode node;
-
-        /// <summary>
-        /// The power.
-        /// </summary>
-        private Power power;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="DataPoint"/> class. 
         /// Create a track point from an XML track point node.
         /// </summary>
-        /// <param name="node">
-        /// A data node used to access the underlying persisted node.
-        /// </param>
-        public DataPoint(INode node)
+        /// <param name="dateTime">The date and time.</param>
+        /// <param name="altitude">The altitude.</param>
+        /// <param name="cadence">The cadence.</param>
+        /// <param name="totalDistance">The total distance.</param>
+        /// <param name="speed">The speed.</param>
+        /// <param name="heartrateInBpm">The heart rate In beats per minute.</param>
+        /// <param name="latitude">The latitude.</param>
+        /// <param name="longitude">The longitude.</param>
+        public DataPoint(DateTime dateTime, Distance altitude, int cadence, Distance totalDistance, Speed speed, int heartrateInBpm, Angle latitude, Angle longitude)
         {
-            this.node = node;
-
-            this.DateTime = node.GetDateTime();
-            this.Altitude = new Distance(node.GetAltitude());
-            this.CadenceInRpm = node.GetCadence();
-            this.TotalDistance = new Distance(node.GetTotalDistance());
-            this.Speed = new Speed(node.GetSpeed());
-            this.HeartrateInBpm = node.GetHeartrate();
-            this.Latitude = Angle.FromDegrees(node.GetLatitude());
-            this.Longitude = Angle.FromDegrees(node.GetLongitude());
-            this.Power = new Power(node.GetPower());
+            this.DateTime = dateTime;
+            this.Altitude = altitude;
+            this.CadenceInRpm = cadence;
+            this.TotalDistance = totalDistance;
+            this.Speed = speed;
+            this.HeartrateInBpm = heartrateInBpm;
+            this.Latitude = latitude;
+            this.Longitude = longitude;
         }
 
-        #region Properties.    
-
         /// <summary>
-        /// Gets the altitude in meters
+        /// Gets the altitude.
         /// </summary>
         public Distance Altitude { get; private set; }
 
         /// <summary>
         /// Gets the heart rate in beats per minute.
         /// </summary>
-        public string HeartrateInBpm { get; private set; }
+        public int HeartrateInBpm { get; private set; }
 
         /// <summary>
         /// Gets the cadence in revolutions per minute.
         /// </summary>
-        public double CadenceInRpm { get; private set; }
-
-        /// <summary>
-        /// Gets or sets the power in watts.
-        /// </summary>
-        public Power Power
-        {
-            get
-            {
-                return this.power;
-            }
-
-            set
-            {
-                this.power = value;
-                this.node.SetPower(Math.Round(this.power.Watts, 0));
-            }
-        }
+        public int CadenceInRpm { get; private set; }
 
         /// <summary>
         /// Gets the speed.
         /// </summary>
-        public Speed Speed { get; set; }
+        public Speed Speed { get; private set; }
 
         /// <summary>
-        /// Gets the distance in meters.
+        /// Gets the distance.
         /// </summary>
         public Distance TotalDistance { get; private set; }
 
@@ -106,8 +78,6 @@ namespace Strava_Centurion
         /// Gets or sets the latitude in degrees.
         /// </summary>
         public Angle Latitude { get; set; }
-
-        #endregion
 
         /// <summary>
         /// Fetch or calculate the distance between this point and another.
@@ -165,7 +135,7 @@ namespace Strava_Centurion
             double distance = this.HaversineDistanceToPoint(other);
             if (Math.Abs(distance - 0.0) < 0.0001)
             {
-                ret = 0.0; // todo: need to sort out not moving a point better than this, see comment in PowerRanger.
+                ret = 0.0; // todo: need to sort out not moving a point better than this.
             }
             else
             {
@@ -176,12 +146,11 @@ namespace Strava_Centurion
         }
 
         /// <summary>
-        /// Calculates the haversine distance in meters between this point and another using latitude and longitude:
+        /// Calculates the distance in meters between this point and another using latitude and longitude.
         /// <a href="http://www.movable-type.co.uk/scripts/latlong.html">Reference</a>
         /// </summary>
         /// <param name="other">The other point.</param>
         /// <returns>Double, the distance in meters as the crow flies.</returns>
-        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
         public Distance HaversineDistanceToPoint(DataPoint other)
         {
             var latitudeDelta = other.Latitude - this.Latitude;

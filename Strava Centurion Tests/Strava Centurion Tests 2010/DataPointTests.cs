@@ -21,20 +21,7 @@ namespace Strava_Centurion_Tests_2010
     [TestFixture]
     public class DataPointTests
     {
-        [Test]
-        public void CanConstructWithoutException()
-        {
-            // arrange
-            var mockXmlNode = MockRepository.GenerateMock<INode>();
-
-            // act
-            var tcxPoint = new DataPoint(mockXmlNode);
-
-            // assert
-            Assert.IsNotNull(tcxPoint);
-        }
-
-        [Test]
+/*        [Test]
         public void WhenConstructedAltitudeIsRead()
         {
             // arrange
@@ -206,6 +193,6 @@ namespace Strava_Centurion_Tests_2010
 
             // assert
             Assert.AreEqual(28.022, result, 0.001);
-        }
+        }*/
     }
 }

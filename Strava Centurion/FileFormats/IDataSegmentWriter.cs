@@ -9,17 +9,18 @@
 
 namespace Strava_Centurion.FileFormats
 {
+    using System;
     using System.Collections.Generic;
 
     /// <summary>
     /// An interface for writing out data points.
     /// </summary>
-    public interface IDataSegmentWriter
+    public interface IDataSegmentWriter : IDisposable
     {
         /// <summary>
         /// A method to write out data points.
         /// </summary>
         /// <param name="dataSegments">The data segments to write.</param>
-        void Write(IEnumerable<DataSegment> dataSegments);
+        void Write(List<DataSegment> dataSegments);
     }
 }
