@@ -77,9 +77,10 @@ namespace Strava_Centurion
         /// <param name="e">Standard event e.</param>
         private void MainFormFormClosing(object sender, FormClosingEventArgs e)
         {
-            // todo: set settings from current state!
+            // TODO: set settings from current state!
             Settings.Default.Save();
         }
+
         #endregion
 
         #region Helper Methods.
@@ -91,7 +92,7 @@ namespace Strava_Centurion
         /// </param>
         private void LogMessage(string msg)
         {
-            logText.Text += string.Format("[{0}] - [{1}]\r\n", DateTime.Now.ToString(CultureInfo.CurrentCulture), msg);
+            this.logText.Text += string.Format("[{0}] - [{1}]\r\n", DateTime.Now.ToString(CultureInfo.CurrentCulture), msg);
         }
 
         /// <summary>
@@ -154,16 +155,16 @@ namespace Strava_Centurion
         /// </param>
         private void ButtonOpenClick(object sender, EventArgs e)
         {
-            if (openFile.ShowDialog() == DialogResult.OK)
+            if (this.openFile.ShowDialog() == DialogResult.OK)
             {
-                filename.Text = openFile.SafeFileName;
-                this.fullFileName = openFile.FileName;
+                this.filename.Text = this.openFile.SafeFileName;
+                this.fullFileName = this.openFile.FileName;
                 this.fileParserThread.RunWorkerAsync();
             }
         }
 
         /// <summary>
-        /// Having selected a new file, this will parse it into a new <see cref="TcxFile"/> instance.
+        /// Having selected a new file, this will parse it into.
         /// </summary>
         /// <param name="sender">
         /// The sender.
@@ -212,24 +213,20 @@ namespace Strava_Centurion
         /// </param>
         private void ButtonProcessClick(object sender, EventArgs e)
         {
-            powerCalcThread.RunWorkerAsync();
+            this.powerCalcThread.RunWorkerAsync();
         }
 
         /// <summary>
-        /// The power calc thread do work.
+        /// The work event for the power calculation thread.
         /// </summary>
-        /// <param name="sender">
-        /// The sender.
-        /// </param>
-        /// <param name="e">
-        /// The e.
-        /// </param>
+        /// <param name="sender">The sender of the event.</param>
+        /// <param name="e">The event arguments.</param>
         private void PowerCalcThreadDoWork(object sender, DoWorkEventArgs e)
         {
             // calculate the power values.
             var rider = new Rider(double.Parse(this.riderWeight.Text), double.Parse(this.bikeWeight.Text));
 
-            foreach (var dataSegment in dataSegments)
+            foreach (var dataSegment in this.dataSegments)
             {
                 dataSegment.Calculate(rider, this.reality);
             }
@@ -265,7 +262,7 @@ namespace Strava_Centurion
         /// <param name="e">
         /// Standard windows event argument: The e.
         /// </param>
-        private void PowerCalcThreadRunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        private void PowerCalcThreadRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             this.LogMessage("Completed power.");
         }
