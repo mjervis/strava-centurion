@@ -82,6 +82,15 @@ namespace Strava_Centurion_Tests_2010
             Assert.IsTrue(point1.DistanceToPoint(point2).IsUnknown);
         }
 
+        [Test]
+        public void HaversineTest()
+        {
+            var point1 = new DataPoint(DateTime.Now, Distance.Unknown, 0, Distance.Unknown, new Speed(0), 0, new Angle(53.296161), new Angle(-1.513128));
+            var point2 = new DataPoint(DateTime.Now, Distance.Unknown, 0, Distance.Unknown, new Speed(0), 0, new Angle(53.295997), new Angle(-1.513449));
+
+            Assert.AreEqual(28.022, point1.HaversineDistanceToPoint(point2), 0.001);
+        }
+
         /*
 
         /// <summary>
@@ -287,27 +296,6 @@ namespace Strava_Centurion_Tests_2010
             // assert
             Assert.AreEqual(28.465, result, 0.001);
         }
-
-        [Test]
-        public void HaversineTest()
-        {
-            // arrange
-            var mockNodeStart = MockRepository.GenerateMock<INode>();
-            mockNodeStart.Stub(s => s.GetLatitude()).Return(53.296161);
-            mockNodeStart.Stub(s => s.GetLongitude()).Return(-1.513128);
-
-            var mockNodeEnd = MockRepository.GenerateMock<INode>();
-            mockNodeEnd.Stub(s => s.GetLatitude()).Return(53.295997);
-            mockNodeEnd.Stub(s => s.GetLongitude()).Return(-1.513449);
-
-            var tcxPointStart = new DataPoint(mockNodeStart);
-            var tcxPointEnd = new DataPoint(mockNodeEnd);
-
-            // act
-            var result = tcxPointStart.HaversineDistanceToPoint(tcxPointEnd);
-
-            // assert
-            Assert.AreEqual(28.022, result, 0.001);
-        }*/
+*/
     }
 }
