@@ -53,6 +53,17 @@ namespace Strava_Centurion
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        public bool IsUnknown
+        {
+            get
+            {
+                return double.IsNaN(this.Metres);
+            }
+        }
+
+        /// <summary>
         /// Gets the distance in kilometers.
         /// </summary>
         public double Kilometres

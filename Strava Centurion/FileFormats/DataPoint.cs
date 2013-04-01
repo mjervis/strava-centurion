@@ -90,21 +90,15 @@ namespace Strava_Centurion
         /// </returns>
         public Distance DistanceToPoint(DataPoint other)
         {
-            Distance result;
-
-            if (double.IsNaN(this.TotalDistance) || double.IsNaN(other.TotalDistance))
+            if (this.TotalDistance.IsUnknown || other.TotalDistance.IsUnknown)
             {
                 var ascent = this.AscentToPoint(other);
                 var haversine = this.HaversineDistanceToPoint(other);
 
-                result = new Distance(Math.Sqrt((ascent * ascent) + (haversine * haversine)));
-            }
-            else
-            {
-                result = other.TotalDistance - this.TotalDistance;
+                return new Distance(Math.Sqrt((ascent * ascent) + (haversine * haversine)));
             }
 
-            return result;
+            return other.TotalDistance - this.TotalDistance;
         }
 
         /// <summary>
@@ -125,24 +119,15 @@ namespace Strava_Centurion
         /// <returns>Ratio of ascent to distance.</returns>
         public double GradientToPoint(DataPoint other)
         {
-            /*
-             * Trig:
-             *  h = sqrt(x^2 + y^2) where x and y are the lengths of the other two sides.
-             *  we have lots of x, y and h.
-             *  Gradient, as a ration is y/x 
-             */
-            double ret;
             double distance = this.HaversineDistanceToPoint(other);
+
+            // if we've not moved then the gradient must be 0
             if (Math.Abs(distance - 0.0) < 0.0001)
             {
-                ret = 0.0; // todo: need to sort out not moving a point better than this.
-            }
-            else
-            {
-                ret = this.AscentToPoint(other) / distance;   
+                return 0.0;
             }
 
-            return ret;
+            return this.AscentToPoint(other) / distance;   
         }
 
         /// <summary>
@@ -160,7 +145,7 @@ namespace Strava_Centurion
 
             var radius = this.GetRadiusOfEarth(this.Latitude);
 
-            var distance = 2 * radius * Math.Asin(Math.Sqrt(h));
+            var distance = 2.0 * radius * Math.Asin(Math.Sqrt(h));
 
             return new Distance(distance);
         }
@@ -172,7 +157,7 @@ namespace Strava_Centurion
         /// <returns>The haversine of theta.</returns>
         private double Haversine(double theta)
         {
-            return Math.Pow(Math.Sin(theta / 2), 2);
+            return Math.Pow(Math.Sin(theta / 2.0), 2);
         }
 
         /// <summary>
@@ -182,7 +167,7 @@ namespace Strava_Centurion
         /// <returns>The radius.</returns>
         private double GetRadiusOfEarth(Angle latitude)
         {
-            return 6378000 - (21000 * Math.Sin(latitude));
+            return 6378000.0 - (21000.0 * Math.Sin(latitude));
         }
     }
 }

@@ -59,6 +59,17 @@ namespace Strava_Centurion
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        public bool IsUnknown
+        {
+            get
+            {
+                return double.IsNaN(this.MetersPerSecond);
+            }
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Speed"/> class with the given speed in m/s.
         /// </summary>
         /// <param name="metersPerSecond">

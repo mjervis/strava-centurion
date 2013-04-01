@@ -82,11 +82,11 @@ namespace Strava_Centurion
         {
             get
             {
-                if (double.IsNaN(this.Start.Speed.MetersPerSecond) || double.IsNaN(this.End.Speed.MetersPerSecond))
+                if (this.Start.Speed.IsUnknown || this.End.Speed.IsUnknown)
                 {
                     if (this.Length <= 0.0 || this.ElapsedTime <= 0.0)
                     {
-                        return Speed.Unknown;
+                        return new Speed(0.0);
                     }
 
                     return new Speed(this.Length / this.ElapsedTime);
@@ -99,11 +99,11 @@ namespace Strava_Centurion
         /// <summary>
         /// Gets the average cadence along the segment.
         /// </summary>
-        public double Cadence
+        public int Cadence
         {
             get
             {
-                return (this.Start.CadenceInRpm + this.End.CadenceInRpm) / 2.0;
+                return (this.Start.CadenceInRpm + this.End.CadenceInRpm) / 2;
             }
         }
 
@@ -114,9 +114,9 @@ namespace Strava_Centurion
         {
             get
             {
-                if (double.IsNaN(this.Start.Speed.MetersPerSecond) || double.IsNaN(this.End.Speed.MetersPerSecond))
+                if (this.Start.Speed.IsUnknown || this.End.Speed.IsUnknown)
                 {
-                    throw new Exception("TODO - need to calculate this in an alternative way");
+                    throw new Exception("TODO");
                 }
 
                 return (this.End.Speed.MetersPerSecond - this.Start.Speed.MetersPerSecond) / this.ElapsedTime;       
@@ -191,9 +191,6 @@ namespace Strava_Centurion
         /// <returns>A force.</returns>
         private Force GetRollingResistanceForce(Rider rider, Reality reality)
         {
-            // weight = mass(kg's) * gravity(9.81 m/s2)
-            // c = rolling resistance coefficient
-            // resistance (newtons) = c * weight
             return new Force(rider.MassIncludingBike * reality.AccelerationDueToGravity * reality.CoefficientOfRollingResistance);
         }
 
