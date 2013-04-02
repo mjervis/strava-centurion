@@ -55,6 +55,17 @@ namespace Strava_Centurion
         }
 
         /// <summary>
+        /// Is this an unknown angle.
+        /// </summary>
+        public bool IsUnknown
+        {
+            get
+            {
+                return double.IsNaN(this.Radians);
+            }
+        }
+
+        /// <summary>
         /// Gets the angle in degrees.
         /// </summary>
         public double Degrees

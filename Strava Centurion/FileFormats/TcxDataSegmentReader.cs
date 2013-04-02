@@ -180,7 +180,7 @@ namespace Strava_Centurion.FileFormats
                 return Angle.Unknown;
             }
 
-            return new Angle(double.Parse(subNode.InnerText));
+            return Angle.FromDegrees(double.Parse(subNode.InnerText));
         }
 
         /// <summary>

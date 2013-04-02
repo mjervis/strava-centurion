@@ -16,6 +16,7 @@ namespace Strava_Centurion
     using System.ComponentModel;
     using System.Globalization;
     using System.IO;
+    using System.Linq;
     using System.Windows.Forms;
 
     using Strava_Centurion.FileFormats;
@@ -62,8 +63,7 @@ namespace Strava_Centurion
             this.reality = new Reality();
 
             this.reality.Temperature = this.GetSafeDouble(this.temperature, this.reality.Temperature);
-            this.reality.CoefficientOfRollingResistance = this.GetSafeDouble(
-                this.Crr, this.reality.CoefficientOfRollingResistance);
+            this.reality.CoefficientOfRollingResistance = this.GetSafeDouble(this.Crr, this.reality.CoefficientOfRollingResistance);
             this.reality.DragCoefficient = this.GetSafeDouble(this.dragCoefficient, this.reality.DragCoefficient);
             this.reality.EffectiveFrontalArea = this.GetSafeDouble(this.frontalArea, this.reality.EffectiveFrontalArea);
             this.cachedBikeWeight = this.GetSafeDouble(this.bikeWeight, this.cachedBikeWeight);
@@ -195,7 +195,32 @@ namespace Strava_Centurion
         /// </param>
         private void FileParserThreadRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            this.LogMessage(string.Format("File loaded ({0} segments).", this.dataSegments.Count));
+            this.LogMessage(string.Format("{0} segments loaded.", this.dataSegments.Count));
+
+            if (this.dataSegments.Any(s => s.Speed.IsUnknown))
+            {
+                this.LogMessage(string.Format("  {0} segments without average speed.", this.dataSegments.Count(s => s.Speed.IsUnknown)));
+            }
+
+            if (this.dataSegments.Any(s => s.End.Latitude.IsUnknown))
+            {
+                this.LogMessage(string.Format("  {0} segments without end latitude.", this.dataSegments.Count(s => s.End.Latitude.IsUnknown)));
+            }
+
+            if (this.dataSegments.Any(s => s.End.Longitude.IsUnknown))
+            {
+                this.LogMessage(string.Format("  {0} segments without end longitude.", this.dataSegments.Count(s => s.End.Longitude.IsUnknown)));
+            }
+
+            if (this.dataSegments.Any(s => s.End.Altitude.IsUnknown))
+            {
+                this.LogMessage(string.Format("  {0} segments without end altitude.", this.dataSegments.Count(s => s.End.Altitude.IsUnknown)));
+            }
+
+            if (this.dataSegments.Any(s => s.End.TotalDistance.IsUnknown))
+            {
+                this.LogMessage(string.Format("  {0} segments without end total distance.", this.dataSegments.Count(s => s.End.TotalDistance.IsUnknown)));
+            }
 
             this.buttonProcess.Enabled = (this.dataSegments != null) && (this.dataSegments.Count > 0);
         }

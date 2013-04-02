@@ -22,8 +22,8 @@ namespace Strava_Centurion_Tests_2010
         [Test]
         public void DistanceToPointIsCorrect_BothTotalDistancesAreKnown()
         {
-            var point1 = new DataPoint(DateTime.Now, Distance.Zero, 0, new Distance(123.45), new Speed(0), 0, new Angle(0), new Angle(0));
-            var point2 = new DataPoint(DateTime.Now, Distance.Zero, 0, new Distance(234.56), new Speed(0), 0, new Angle(0), new Angle(0));
+            var point1 = new DataPoint(DateTime.Now, Distance.Zero, 0, new Distance(123.45), new Speed(0), 0, Angle.FromDegrees(0), Angle.FromDegrees(0));
+            var point2 = new DataPoint(DateTime.Now, Distance.Zero, 0, new Distance(234.56), new Speed(0), 0, Angle.FromDegrees(0), Angle.FromDegrees(0));
 
             Assert.AreEqual(111.11, point1.DistanceToPoint(point2).Metres);
         }
@@ -31,8 +31,8 @@ namespace Strava_Centurion_Tests_2010
         [Test]
         public void DistanceToPointIsCorrect_BothTotalDistancesAreKnownAndSame()
         {
-            var point1 = new DataPoint(DateTime.Now, Distance.Zero, 0, new Distance(123.45), new Speed(0), 0, new Angle(0), new Angle(0));
-            var point2 = new DataPoint(DateTime.Now, Distance.Zero, 0, new Distance(123.45), new Speed(0), 0, new Angle(0), new Angle(0));
+            var point1 = new DataPoint(DateTime.Now, Distance.Zero, 0, new Distance(123.45), new Speed(0), 0, Angle.FromDegrees(0), Angle.FromDegrees(0));
+            var point2 = new DataPoint(DateTime.Now, Distance.Zero, 0, new Distance(123.45), new Speed(0), 0, Angle.FromDegrees(0), Angle.FromDegrees(0));
 
             Assert.AreEqual(0.0, point1.DistanceToPoint(point2).Metres);
         }
@@ -40,8 +40,8 @@ namespace Strava_Centurion_Tests_2010
         [Test]
         public void DistanceToPointIsCorrect_TotalDistanceIsNotKnown_AltitudeIsKnownAndSame_PositionIsKnownAndSame()
         {
-            var point1 = new DataPoint(DateTime.Now, new Distance(5), 0, Distance.Unknown, new Speed(0), 0, new Angle(6), new Angle(6));
-            var point2 = new DataPoint(DateTime.Now, new Distance(5), 0, new Distance(234.56), new Speed(0), 0, new Angle(6), new Angle(6));
+            var point1 = new DataPoint(DateTime.Now, new Distance(5), 0, Distance.Unknown, new Speed(0), 0, Angle.FromDegrees(6), Angle.FromDegrees(6));
+            var point2 = new DataPoint(DateTime.Now, new Distance(5), 0, new Distance(234.56), new Speed(0), 0, Angle.FromDegrees(6), Angle.FromDegrees(6));
 
             Assert.AreEqual(0.0, point1.DistanceToPoint(point2).Metres);
         }
@@ -49,17 +49,17 @@ namespace Strava_Centurion_Tests_2010
         [Test]
         public void DistanceToPointIsCorrect_TotalDistanceIsNotKnown_AltitudeIsKnownAndSame_PositionIsKnown()
         {
-            var point1 = new DataPoint(DateTime.Now, new Distance(5), 0, Distance.Unknown, new Speed(0), 0, new Angle(53.296161), new Angle(-1.513128));
-            var point2 = new DataPoint(DateTime.Now, new Distance(5), 0, new Distance(234.56), new Speed(0), 0, new Angle(53.295997), new Angle(-1.513449));
+            var point1 = new DataPoint(DateTime.Now, new Distance(5), 0, Distance.Unknown, new Speed(0), 0, Angle.FromDegrees(58.64), Angle.FromDegrees(-3.07));
+            var point2 = new DataPoint(DateTime.Now, new Distance(5), 0, Distance.Unknown, new Speed(0), 0, Angle.FromDegrees(50.0686), Angle.FromDegrees(-5.7161));
 
-            Assert.AreEqual(2287.02, point1.DistanceToPoint(point2).Metres, 0.005);
+            Assert.AreEqual(966541, point1.DistanceToPoint(point2).Metres, 0.5);
         }
 
         [Test]
         public void DistanceToPointIsCorrect_TotalDistanceIsNotKnown_AltitudeIsKnown_PositionIsKnownAndSame()
         {
-            var point1 = new DataPoint(DateTime.Now, new Distance(5), 0, Distance.Unknown, new Speed(0), 0, new Angle(53.296161), new Angle(-1.513128));
-            var point2 = new DataPoint(DateTime.Now, new Distance(10), 0, new Distance(234.56), new Speed(0), 0, new Angle(53.296161), new Angle(-1.513128));
+            var point1 = new DataPoint(DateTime.Now, new Distance(5), 0, Distance.Unknown, new Speed(0), 0, Angle.FromDegrees(53.296161), Angle.FromDegrees(-1.513128));
+            var point2 = new DataPoint(DateTime.Now, new Distance(10), 0, new Distance(234.56), new Speed(0), 0, Angle.FromDegrees(53.296161), Angle.FromDegrees(-1.513128));
 
             Assert.AreEqual(5.0, point1.DistanceToPoint(point2).Metres, 0.005);
         }
@@ -67,8 +67,8 @@ namespace Strava_Centurion_Tests_2010
         [Test]
         public void DistanceToPointIsCorrect_TotalDistanceIsNotKnown_AltitudeIsNotKnown_PositionIsKnown()
         {
-            var point1 = new DataPoint(DateTime.Now, Distance.Unknown, 0, Distance.Unknown, new Speed(0), 0, new Angle(53.296161), new Angle(-1.513128));
-            var point2 = new DataPoint(DateTime.Now, new Distance(10), 0, new Distance(234.56), new Speed(0), 0, new Angle(54.296161), new Angle(-1.513128));
+            var point1 = new DataPoint(DateTime.Now, Distance.Unknown, 0, Distance.Unknown, new Speed(0), 0, Angle.FromDegrees(53.296161), Angle.FromDegrees(-1.513128));
+            var point2 = new DataPoint(DateTime.Now, new Distance(10), 0, new Distance(234.56), new Speed(0), 0, Angle.FromDegrees(54.296161), Angle.FromDegrees(-1.513128));
 
             Assert.IsTrue(point1.DistanceToPoint(point2).IsUnknown);
         }
@@ -76,8 +76,8 @@ namespace Strava_Centurion_Tests_2010
         [Test]
         public void DistanceToPointIsCorrect_TotalDistanceIsNotKnown_AltitudeIsKnown_PositionIsNotKnown()
         {
-            var point1 = new DataPoint(DateTime.Now, new Distance(5), 0, Distance.Unknown, new Speed(0), 0, Angle.Unknown, new Angle(-1.513128));
-            var point2 = new DataPoint(DateTime.Now, new Distance(10), 0, new Distance(234.56), new Speed(0), 0, new Angle(53.296161), new Angle(-1.513128));
+            var point1 = new DataPoint(DateTime.Now, new Distance(5), 0, Distance.Unknown, new Speed(0), 0, Angle.Unknown, Angle.FromDegrees(-1.513128));
+            var point2 = new DataPoint(DateTime.Now, new Distance(10), 0, new Distance(234.56), new Speed(0), 0, Angle.FromDegrees(53.296161), Angle.FromDegrees(-1.513128));
 
             Assert.IsTrue(point1.DistanceToPoint(point2).IsUnknown);
         }
@@ -85,10 +85,10 @@ namespace Strava_Centurion_Tests_2010
         [Test]
         public void HaversineTest()
         {
-            var point1 = new DataPoint(DateTime.Now, Distance.Unknown, 0, Distance.Unknown, new Speed(0), 0, new Angle(53.296161), new Angle(-1.513128));
-            var point2 = new DataPoint(DateTime.Now, Distance.Unknown, 0, Distance.Unknown, new Speed(0), 0, new Angle(53.295997), new Angle(-1.513449));
+            var point1 = new DataPoint(DateTime.Now, Distance.Unknown, 0, Distance.Unknown, new Speed(0), 0, Angle.FromDegrees(58.64), Angle.FromDegrees(-3.07));
+            var point2 = new DataPoint(DateTime.Now, Distance.Unknown, 0, Distance.Unknown, new Speed(0), 0, Angle.FromDegrees(50.0686), Angle.FromDegrees(-5.7161));
 
-            Assert.AreEqual(28.022, point1.HaversineDistanceToPoint(point2), 0.001);
+            Assert.AreEqual(966541, point1.HaversineDistanceToPoint(point2), 0.5);
         }
 
         /*

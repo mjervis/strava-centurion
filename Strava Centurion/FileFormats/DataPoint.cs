@@ -141,23 +141,15 @@ namespace Strava_Centurion
             var latitudeDelta = other.Latitude - this.Latitude;
             var longitudeDelta = other.Longitude - this.Longitude;
 
-            var h = this.Haversine(latitudeDelta) + (Math.Cos(this.Latitude) * Math.Cos(other.Latitude) * this.Haversine(longitudeDelta));
+            var a = (Math.Sin(latitudeDelta / 2.0) * Math.Sin(latitudeDelta / 2.0))
+                    + (Math.Sin(longitudeDelta / 2.0) * Math.Sin(longitudeDelta / 2.0) * Math.Cos(this.Latitude)
+                       * Math.Cos(other.Latitude));
 
-            var radius = this.GetRadiusOfEarth(this.Latitude);
+            var r = this.GetRadiusOfEarth(this.Latitude);
 
-            var distance = 2.0 * radius * Math.Asin(Math.Sqrt(h));
+            var c = 2.0 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1.0 - a));
 
-            return new Distance(distance);
-        }
-
-        /// <summary>
-        /// Calculates the haversine of theta.
-        /// </summary>
-        /// <param name="theta">The theta value.</param>
-        /// <returns>The haversine of theta.</returns>
-        private double Haversine(double theta)
-        {
-            return Math.Pow(Math.Sin(theta / 2.0), 2);
+            return new Distance(c * r);
         }
 
         /// <summary>
@@ -165,9 +157,9 @@ namespace Strava_Centurion
         /// </summary>
         /// <param name="latitude">The latitude in degrees.</param>
         /// <returns>The radius.</returns>
-        private double GetRadiusOfEarth(Angle latitude)
+        private Distance GetRadiusOfEarth(Angle latitude)
         {
-            return 6378000.0 - (21000.0 * Math.Sin(latitude));
+            return new Distance(6378000.0 - (21000.0 * Math.Sin(latitude)));
         }
     }
 }
