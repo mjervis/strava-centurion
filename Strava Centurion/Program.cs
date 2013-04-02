@@ -9,7 +9,7 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Strava_Centurion
+namespace StravaCenturion
 {
     using System;
     using System.Windows.Forms;

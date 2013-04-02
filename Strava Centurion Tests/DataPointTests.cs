@@ -1,38 +1,151 @@
-﻿// -----------------------------------------------------------------------
-// <copyright file="TcxPointTests.cs" company="FuckingBrit.com">
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="DataPointTests.cs" company="FuckingBrit.com">
 //   Copyright (c) 2013 FuckingBrit.com
-//   Source code available under a total unrestrictive, free, it's all yours licence.
-//   Use at your own risk.
 // </copyright>
-// -----------------------------------------------------------------------
+// <summary>
+//   Source code available under a total unrestrictive, free, it's all yours licence.
+//   Use at your own risk.   
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
-namespace Strava_Centurion_Tests
+namespace StravaCenturionTests
 {
     using System;
-    using System.Xml;
 
     using NUnit.Framework;
 
-    using Rhino.Mocks;
-
-    using Strava_Centurion;
+    using StravaCenturion;
+    using StravaCenturion.Units;
 
     [TestFixture]
     public class DataPointTests
     {
         [Test]
-        public void CanConstructWithoutException()
+        public void DistanceToPointIsCorrect_BothTotalDistancesAreKnown()
         {
-            // arrange
-            var mockXmlNode = MockRepository.GenerateMock<INode>();
+            var point1 = new DataPoint(DateTime.Now, Distance.Zero, Frequency.Zero, new Distance(123.45), new Speed(0), Frequency.Zero, Angle.FromDegrees(0), Angle.FromDegrees(0));
+            var point2 = new DataPoint(DateTime.Now, Distance.Zero, Frequency.Zero, new Distance(234.56), new Speed(0), Frequency.Zero, Angle.FromDegrees(0), Angle.FromDegrees(0));
 
-            // act
-            var tcxPoint = new DataPoint(mockXmlNode);
-
-            // assert
-            Assert.IsNotNull(tcxPoint);
+            Assert.AreEqual(111.11, point1.DistanceToPoint(point2).Metres);
         }
 
+        [Test]
+        public void DistanceToPointIsCorrect_BothTotalDistancesAreKnownAndSame()
+        {
+            var point1 = new DataPoint(DateTime.Now, Distance.Zero, Frequency.Zero, new Distance(123.45), new Speed(0), Frequency.Zero, Angle.FromDegrees(0), Angle.FromDegrees(0));
+            var point2 = new DataPoint(DateTime.Now, Distance.Zero, Frequency.Zero, new Distance(123.45), new Speed(0), Frequency.Zero, Angle.FromDegrees(0), Angle.FromDegrees(0));
+
+            Assert.AreEqual(0.0, point1.DistanceToPoint(point2).Metres);
+        }
+
+        [Test]
+        public void DistanceToPointIsCorrect_TotalDistanceIsNotKnown_AltitudeIsKnownAndSame_PositionIsKnownAndSame()
+        {
+            var point1 = new DataPoint(DateTime.Now, new Distance(5), Frequency.Zero, Distance.Unknown, new Speed(0), Frequency.Zero, Angle.FromDegrees(6), Angle.FromDegrees(6));
+            var point2 = new DataPoint(DateTime.Now, new Distance(5), Frequency.Zero, new Distance(234.56), new Speed(0), Frequency.Zero, Angle.FromDegrees(6), Angle.FromDegrees(6));
+
+            Assert.AreEqual(0.0, point1.DistanceToPoint(point2).Metres);
+        }
+
+        [Test]
+        public void DistanceToPointIsCorrect_TotalDistanceIsNotKnown_AltitudeIsKnownAndSame_PositionIsKnown()
+        {
+            var point1 = new DataPoint(DateTime.Now, new Distance(5), Frequency.Zero, Distance.Unknown, new Speed(0), Frequency.Zero, Angle.FromDegrees(58.64), Angle.FromDegrees(-3.07));
+            var point2 = new DataPoint(DateTime.Now, new Distance(5), Frequency.Zero, Distance.Unknown, new Speed(0), Frequency.Zero, Angle.FromDegrees(50.0686), Angle.FromDegrees(-5.7161));
+
+            Assert.AreEqual(966541, point1.DistanceToPoint(point2).Metres, 0.5);
+        }
+
+        [Test]
+        public void DistanceToPointIsCorrect_TotalDistanceIsNotKnown_AltitudeIsKnown_PositionIsKnownAndSame()
+        {
+            var point1 = new DataPoint(DateTime.Now, new Distance(5), Frequency.Zero, Distance.Unknown, new Speed(0), Frequency.Zero, Angle.FromDegrees(53.296161), Angle.FromDegrees(-1.513128));
+            var point2 = new DataPoint(DateTime.Now, new Distance(10), Frequency.Zero, new Distance(234.56), new Speed(0), Frequency.Zero, Angle.FromDegrees(53.296161), Angle.FromDegrees(-1.513128));
+
+            Assert.AreEqual(5.0, point1.DistanceToPoint(point2).Metres, 0.005);
+        }
+
+        [Test]
+        public void DistanceToPointIsCorrect_TotalDistanceIsNotKnown_AltitudeIsNotKnown_PositionIsKnown()
+        {
+            var point1 = new DataPoint(DateTime.Now, Distance.Unknown, Frequency.Zero, Distance.Unknown, new Speed(0), Frequency.Zero, Angle.FromDegrees(53.296161), Angle.FromDegrees(-1.513128));
+            var point2 = new DataPoint(DateTime.Now, new Distance(10), Frequency.Zero, new Distance(234.56), new Speed(0), Frequency.Zero, Angle.FromDegrees(54.296161), Angle.FromDegrees(-1.513128));
+
+            Assert.IsTrue(point1.DistanceToPoint(point2).IsUnknown);
+        }
+
+        [Test]
+        public void DistanceToPointIsCorrect_TotalDistanceIsNotKnown_AltitudeIsKnown_PositionIsNotKnown()
+        {
+            var point1 = new DataPoint(DateTime.Now, new Distance(5), Frequency.Zero, Distance.Unknown, new Speed(0), Frequency.Zero, Angle.Unknown, Angle.FromDegrees(-1.513128));
+            var point2 = new DataPoint(DateTime.Now, new Distance(10), Frequency.Zero, new Distance(234.56), new Speed(0), Frequency.Zero, Angle.FromDegrees(53.296161), Angle.FromDegrees(-1.513128));
+
+            Assert.IsTrue(point1.DistanceToPoint(point2).IsUnknown);
+        }
+
+        [Test]
+        public void HaversineTest()
+        {
+            var point1 = new DataPoint(DateTime.Now, Distance.Unknown, Frequency.Zero, Distance.Unknown, new Speed(0), Frequency.Zero, Angle.FromDegrees(58.64), Angle.FromDegrees(-3.07));
+            var point2 = new DataPoint(DateTime.Now, Distance.Unknown, Frequency.Zero, Distance.Unknown, new Speed(0), Frequency.Zero, Angle.FromDegrees(50.0686), Angle.FromDegrees(-5.7161));
+
+            Assert.AreEqual(966541, point1.HaversineDistanceToPoint(point2), 0.5);
+        }
+
+        /*
+
+        /// <summary>
+        /// Calculates the ascent from this point to the point specified.
+        /// </summary>
+        /// <param name="other">The other point.</param>
+        /// <returns>The ascent in meters.</returns>
+        public Distance AscentToPoint(DataPoint other)
+        {
+            return other.Altitude - this.Altitude;
+        }
+
+        /// <summary>
+        /// Calculate the gradient from this point to another point as the ratio of the
+        /// distance in m climbed over the distance in m travelled.
+        /// </summary>
+        /// <param name="other">The other point.</param>
+        /// <returns>Ratio of ascent to distance.</returns>
+        public double GradientToPoint(DataPoint other)
+        {
+            double distance = this.HaversineDistanceToPoint(other);
+
+            // if we've not moved then the gradient must be 0
+            if (Math.Abs(distance - 0.0) < 0.0001)
+            {
+                return 0.0;
+            }
+
+            return this.AscentToPoint(other) / distance;   
+        }
+
+        /// <summary>
+        /// Calculates the distance in meters between this point and another using latitude and longitude.
+        /// <a href="http://www.movable-type.co.uk/scripts/latlong.html">Reference</a>
+        /// </summary>
+        /// <param name="other">The other point.</param>
+        /// <returns>Double, the distance in meters as the crow flies.</returns>
+        public Distance HaversineDistanceToPoint(DataPoint other)
+        {
+            var latitudeDelta = other.Latitude - this.Latitude;
+            var longitudeDelta = other.Longitude - this.Longitude;
+
+            var h = this.Haversine(latitudeDelta) + (Math.Cos(this.Latitude) * Math.Cos(other.Latitude) * this.Haversine(longitudeDelta));
+
+            var radius = this.GetRadiusOfEarth(this.Latitude);
+
+            var distance = 2.0 * radius * Math.Asin(Math.Sqrt(h));
+
+            return new Distance(distance);
+        }
+         * 
+         * */
+
+        /*
         [Test]
         public void WhenConstructedAltitudeIsRead()
         {
@@ -52,7 +165,7 @@ namespace Strava_Centurion_Tests
         {
             // arrange
             var mockNode = MockRepository.GenerateMock<INode>();
-            mockNode.Stub(s => s.GetCadence()).Return("83");
+            mockNode.Stub(s => s.GetCadence()).Return(83);
 
             // act
             var tcxPoint = new DataPoint(mockNode);
@@ -158,5 +271,32 @@ namespace Strava_Centurion_Tests
             // assert
             mockNode.AssertWasCalled(s => s.GetTotalDistance());
         }
+
+        [Test]
+        public void DistanceInMetersWithNoTotalDistanceTest()
+        {
+            // arrange
+            var mockNodeStart = MockRepository.GenerateMock<INode>();
+            mockNodeStart.Stub(s => s.GetLatitude()).Return(53.296161);
+            mockNodeStart.Stub(s => s.GetLongitude()).Return(-1.513128);
+            mockNodeStart.Stub(s => s.GetAltitude()).Return(5);
+            mockNodeStart.Stub(s => s.GetTotalDistance()).Return(double.NaN);
+
+            var mockNodeEnd = MockRepository.GenerateMock<INode>();
+            mockNodeEnd.Stub(s => s.GetLatitude()).Return(53.295997);
+            mockNodeEnd.Stub(s => s.GetLongitude()).Return(-1.513449);
+            mockNodeEnd.Stub(s => s.GetAltitude()).Return(10);
+            mockNodeEnd.Stub(s => s.GetTotalDistance()).Return(double.NaN);
+
+            var tcxPointStart = new DataPoint(mockNodeStart);
+            var tcxPointEnd = new DataPoint(mockNodeEnd);
+
+            // act
+            var result = tcxPointStart.DistanceToPoint(tcxPointEnd).Metres;
+
+            // assert
+            Assert.AreEqual(28.465, result, 0.001);
+        }
+*/
     }
 }

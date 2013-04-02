@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Strava Centurion", "Strava Centurion\Strava Centurion.csproj", "{E7485144-3EC4-4D0C-A6EF-D013D03B507E}"
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StravaCenturion", "Strava Centurion\StravaCenturion.csproj", "{E7485144-3EC4-4D0C-A6EF-D013D03B507E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Strava Centurion Tests 2010", "Strava Centurion Tests\Strava Centurion Tests 2010\Strava Centurion Tests 2010.csproj", "{D528D1F3-43BF-4941-ACF5-E699A27A1236}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StravaCenturionTests", "Strava Centurion Tests\StravaCenturionTests.csproj", "{D528D1F3-43BF-4941-ACF5-E699A27A1236}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -9,7 +9,7 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Strava_Centurion
+namespace StravaCenturion
 {
     using System;
     using System.Collections.Generic;
@@ -19,8 +19,8 @@ namespace Strava_Centurion
     using System.Linq;
     using System.Windows.Forms;
 
-    using Strava_Centurion.FileFormats;
-    using Strava_Centurion.Properties;
+    using StravaCenturion.IO;
+    using StravaCenturion.Properties;
 
     /// <summary>
     /// Class to do the main UI.
@@ -197,11 +197,11 @@ namespace Strava_Centurion
         {
             this.LogMessage(string.Format("{0} segments loaded.", this.dataSegments.Count));
 
-            this.LogMessage(string.Format("  Average speed = {0} kmh.", this.dataSegments.Average(s => s.Speed.KmHour)));
+            this.LogMessage(string.Format("  Average speed = {0} kmh.", this.dataSegments.Average(s => s.Speed.KilometresPerHour)));
             this.LogMessage(string.Format("  Average Cadence = {0} rpm.", this.dataSegments.Average(s => s.Cadence)));
             this.LogMessage(string.Format("  Maximum Cadence = {0} rpm.", this.dataSegments.Max(s => s.Cadence)));
-            this.LogMessage(string.Format("  Average Heartrate = {0} bpm.", this.dataSegments.Average(s => s.End.HeartrateInBpm)));
-            this.LogMessage(string.Format("  Maximum Heartrate = {0} bpm.", this.dataSegments.Max(s => s.End.HeartrateInBpm)));
+            this.LogMessage(string.Format("  Average Heartrate = {0} bpm.", this.dataSegments.Average(s => s.End.Heartrate.PerMinute)));
+            this.LogMessage(string.Format("  Maximum Heartrate = {0} bpm.", this.dataSegments.Max(s => s.End.Heartrate.PerMinute)));
 
             if (this.dataSegments.Any(s => s.Speed.IsUnknown))
             {

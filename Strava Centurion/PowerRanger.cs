@@ -6,7 +6,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace Strava_Centurion
+namespace StravaCenturion
 {
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;

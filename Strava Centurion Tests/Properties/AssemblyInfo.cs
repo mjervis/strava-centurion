@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Strava Centurion Tests")]
+[assembly: AssemblyTitle("Strava Centurion Tests 2010")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Strava Centurion Tests")]
-[assembly: AssemblyCopyright("Copyright ©  2013")]
+[assembly: AssemblyCompany("CSE Global UK")]
+[assembly: AssemblyProduct("Strava Centurion Tests 2010")]
+[assembly: AssemblyCopyright("Copyright © CSE Global UK 2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("51cbbee9-4f66-4ecc-b44d-537d9c17ecd8")]
+[assembly: Guid("596d514f-a346-48e6-9111-af3db76b1212")]
 
 // Version information for an assembly consists of the following four values:
 //

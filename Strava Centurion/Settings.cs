@@ -9,7 +9,7 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Strava_Centurion.Properties
+namespace StravaCenturion.Properties
 {
     using System;
 
