@@ -197,6 +197,12 @@ namespace Strava_Centurion
         {
             this.LogMessage(string.Format("{0} segments loaded.", this.dataSegments.Count));
 
+            this.LogMessage(string.Format("  Average speed = {0} kmh.", this.dataSegments.Average(s => s.Speed.KmHour)));
+            this.LogMessage(string.Format("  Average Cadence = {0} rpm.", this.dataSegments.Average(s => s.Cadence)));
+            this.LogMessage(string.Format("  Maximum Cadence = {0} rpm.", this.dataSegments.Max(s => s.Cadence)));
+            this.LogMessage(string.Format("  Average Heartrate = {0} bpm.", this.dataSegments.Average(s => s.End.HeartrateInBpm)));
+            this.LogMessage(string.Format("  Maximum Heartrate = {0} bpm.", this.dataSegments.Max(s => s.End.HeartrateInBpm)));
+
             if (this.dataSegments.Any(s => s.Speed.IsUnknown))
             {
                 this.LogMessage(string.Format("  {0} segments without average speed.", this.dataSegments.Count(s => s.Speed.IsUnknown)));
@@ -289,7 +295,9 @@ namespace Strava_Centurion
         /// </param>
         private void PowerCalcThreadRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            this.LogMessage("Completed power.");
+            this.LogMessage("Completed power calculation");
+            this.LogMessage(string.Format("  Average Power = {0} watts.", this.dataSegments.Average(s => s.Power.Watts)));
+            this.LogMessage(string.Format("  Maximum Power = {0} watts.", this.dataSegments.Max(s => s.Power.Watts)));
         }
         #endregion
         

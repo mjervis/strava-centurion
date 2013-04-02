@@ -161,7 +161,7 @@ namespace Strava_Centurion
         {
             get
             {
-                return new Power(Math.Max(0.0, this.TotalForce * this.Speed.MetersPerSecond));   
+                return new Power(Math.Max(0.0, this.TotalForce * this.Speed.MetersPerSecond));
             }
         }
 
