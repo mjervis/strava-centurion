@@ -198,8 +198,8 @@ namespace StravaCenturion
             this.LogMessage(string.Format("{0} segments loaded.", this.dataSegments.Count));
 
             this.LogMessage(string.Format("  Average speed = {0} kmh.", this.dataSegments.Average(s => s.Speed.KilometresPerHour)));
-            this.LogMessage(string.Format("  Average Cadence = {0} rpm.", this.dataSegments.Average(s => s.Cadence)));
-            this.LogMessage(string.Format("  Maximum Cadence = {0} rpm.", this.dataSegments.Max(s => s.Cadence)));
+            this.LogMessage(string.Format("  Average Cadence = {0} rpm.", this.dataSegments.Average(s => s.Cadence.PerMinute)));
+            this.LogMessage(string.Format("  Maximum Cadence = {0} rpm.", this.dataSegments.Max(s => s.Cadence.PerMinute)));
             this.LogMessage(string.Format("  Average Heartrate = {0} bpm.", this.dataSegments.Average(s => s.End.Heartrate.PerMinute)));
             this.LogMessage(string.Format("  Maximum Heartrate = {0} bpm.", this.dataSegments.Max(s => s.End.Heartrate.PerMinute)));
 
