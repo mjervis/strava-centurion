@@ -52,15 +52,24 @@ namespace StravaCenturion.IO
                 streamWriter.WriteLine("        <TotalTimeSeconds>" + (dataSegments.Last().End.DateTime - dataSegments.First().End.DateTime).TotalSeconds + "</TotalTimeSeconds>");
                 streamWriter.WriteLine("        <DistanceMeters>" + dataSegments.Sum(s => s.Length) + "</DistanceMeters>");
                 streamWriter.WriteLine("        <MaximumSpeed>" + dataSegments.Max(s => s.Speed.KilometresPerHour) + "</MaximumSpeed>");
-                /* <Calories>3438</Calories> */
-                streamWriter.WriteLine("        <AverageHeartRateBpm xsi:type=\"HeartRateInBeatsPerMinute_t\">");
-                streamWriter.WriteLine("          <Value>" + dataSegments.Average(s => s.End.Heartrate.PerMinute) + "</Value>");
-                streamWriter.WriteLine("        </AverageHeartRateBpm>");
-                streamWriter.WriteLine("        <MaximumHeartRateBpm xsi:type=\"HeartRateInBeatsPerMinute_t\">");
-                streamWriter.WriteLine("          <Value>" + dataSegments.Max(s => s.End.Heartrate.PerMinute) + "</Value>");
-                streamWriter.WriteLine("        </MaximumHeartRateBpm>");
+
+                if (dataSegments.Any(s => !s.Heartrate.IsUnknown))
+                {
+                    streamWriter.WriteLine("        <AverageHeartRateBpm xsi:type=\"HeartRateInBeatsPerMinute_t\">");
+                    streamWriter.WriteLine("          <Value>" + dataSegments.Where(s => !s.Heartrate.IsUnknown).Average(s => s.Heartrate.PerMinute) + "</Value>");
+                    streamWriter.WriteLine("        </AverageHeartRateBpm>");
+                    streamWriter.WriteLine("        <MaximumHeartRateBpm xsi:type=\"HeartRateInBeatsPerMinute_t\">");
+                    streamWriter.WriteLine("          <Value>" + dataSegments.Where(s => !s.Heartrate.IsUnknown).Max(s => s.Heartrate.PerMinute) + "</Value>");
+                    streamWriter.WriteLine("        </MaximumHeartRateBpm>");
+                }
+
                 streamWriter.WriteLine("        <Intensity>Active</Intensity>");
-                streamWriter.WriteLine("        <Cadence>" + dataSegments.Average(s => s.Cadence) + "</Cadence>");
+
+                if (dataSegments.Any(s => !s.Cadence.IsUnknown))
+                {
+                    streamWriter.WriteLine("        <Cadence>" + dataSegments.Where(s => !s.Cadence.IsUnknown).Average(s => s.Cadence.PerMinute) + "</Cadence>");
+                }
+
                 streamWriter.WriteLine("        <TriggerMethod>Manual</TriggerMethod>");
                 streamWriter.WriteLine("        <Track>");
 
@@ -68,22 +77,53 @@ namespace StravaCenturion.IO
                 {
                     streamWriter.WriteLine("          <Trackpoint>");
                     streamWriter.WriteLine("            <Time>" + dataSegment.End.DateTime.ToString("s") + "Z</Time>");
-                    streamWriter.WriteLine("            <Position>");
-                    streamWriter.WriteLine("              <LatitudeDegrees>" + dataSegment.End.Latitude.Degrees + "</LatitudeDegrees>");
-                    streamWriter.WriteLine("              <LongitudeDegrees>" + dataSegment.End.Longitude.Degrees + "</LongitudeDegrees>");
-                    streamWriter.WriteLine("            </Position>");
-                    streamWriter.WriteLine("            <AltitudeMeters>" + dataSegment.End.Altitude.Metres + "</AltitudeMeters>");
-                    streamWriter.WriteLine("            <DistanceMeters>" + dataSegment.End.TotalDistance.Metres + "</DistanceMeters>");
+
+                    if (!dataSegment.Latitude.IsUnknown || !dataSegment.Longitude.IsUnknown)
+                    {
+                        streamWriter.WriteLine("            <Position>");
+
+                        if (!dataSegment.Latitude.IsUnknown)
+                        {
+                            streamWriter.WriteLine("              <LatitudeDegrees>" + dataSegment.End.Latitude.Degrees + "</LatitudeDegrees>");
+                        }
+
+                        if (!dataSegment.Longitude.IsUnknown)
+                        {
+                            streamWriter.WriteLine("              <LongitudeDegrees>" + dataSegment.End.Longitude.Degrees + "</LongitudeDegrees>");
+                        }
+
+                        streamWriter.WriteLine("            </Position>");
+                    }
+
+                    if (!dataSegment.Altitude.IsUnknown)
+                    {
+                        streamWriter.WriteLine("            <AltitudeMeters>" + dataSegment.Altitude.Metres + "</AltitudeMeters>");
+                    }
+
+                    if (!dataSegment.End.TotalDistance.IsUnknown)
+                    {
+                        streamWriter.WriteLine("            <DistanceMeters>" + dataSegment.End.TotalDistance.Metres + "</DistanceMeters>");
+                    }
+
                     streamWriter.WriteLine("            <Extensions>");
                     streamWriter.WriteLine("              <TPX xmlns=\"http://www.garmin.com/xmlschemas/ActivityExtension/v2\">");
                     streamWriter.WriteLine("                <Speed>" + dataSegment.Speed.KilometresPerHour + "</Speed>");
                     streamWriter.WriteLine("                <Watts>" + dataSegment.Power.Watts + "</Watts>");
                     streamWriter.WriteLine("              </TPX>");
                     streamWriter.WriteLine("            </Extensions>");
-                    streamWriter.WriteLine("            <HeartRateBpm>");
-                    streamWriter.WriteLine("              <Value>" + dataSegment.End.Heartrate.PerMinute + "</Value>");
-                    streamWriter.WriteLine("            </HeartRateBpm>");
-                    streamWriter.WriteLine("            <Cadence>" + dataSegment.Cadence + "</Cadence>");
+
+                    if (!dataSegment.Heartrate.IsUnknown)
+                    {
+                        streamWriter.WriteLine("            <HeartRateBpm>");
+                        streamWriter.WriteLine("              <Value>" + dataSegment.Heartrate.PerMinute + "</Value>");
+                        streamWriter.WriteLine("            </HeartRateBpm>");
+                    }
+
+                    if (!dataSegment.Cadence.IsUnknown)
+                    {
+                        streamWriter.WriteLine("            <Cadence>" + dataSegment.Cadence.PerMinute + "</Cadence>");
+                    }
+
                     streamWriter.WriteLine("          </Trackpoint>");    
                 }
 

@@ -127,5 +127,16 @@ namespace StravaCenturion.Units
         {
             return new Distance(distance.Metres / divisor.Metres);
         }
+
+        /// <summary>
+        /// Divides a distance by a divisor.
+        /// </summary>
+        /// <param name="distance">The distance to be divided.</param>
+        /// <param name="divisor">The divisor.</param>
+        /// <returns>The result of the division.</returns>
+        public static Distance operator /(Distance distance, double divisor)
+        {
+            return new Distance(distance.Metres / divisor);
+        }
     }
 }

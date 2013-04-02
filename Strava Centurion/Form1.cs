@@ -197,35 +197,48 @@ namespace StravaCenturion
         {
             this.LogMessage(string.Format("{0} segments loaded.", this.dataSegments.Count));
 
-            this.LogMessage(string.Format("  Average speed = {0} kmh.", this.dataSegments.Average(s => s.Speed.KilometresPerHour)));
-            this.LogMessage(string.Format("  Average Cadence = {0} rpm.", this.dataSegments.Average(s => s.Cadence.PerMinute)));
-            this.LogMessage(string.Format("  Maximum Cadence = {0} rpm.", this.dataSegments.Max(s => s.Cadence.PerMinute)));
-            this.LogMessage(string.Format("  Average Heartrate = {0} bpm.", this.dataSegments.Average(s => s.End.Heartrate.PerMinute)));
-            this.LogMessage(string.Format("  Maximum Heartrate = {0} bpm.", this.dataSegments.Max(s => s.End.Heartrate.PerMinute)));
+            this.LogMessage(string.Format("Average speed = {0} kmh.", this.dataSegments.Average(s => s.Speed.KilometresPerHour)));
+
+            if (this.dataSegments.Any(s => !s.Cadence.IsUnknown))
+            {
+                this.LogMessage(string.Format("Average Cadence = {0} rpm.", this.dataSegments.Where(s => !s.Cadence.IsUnknown).Average(s => s.Cadence.PerMinute)));
+                this.LogMessage(string.Format("Maximum Cadence = {0} rpm.", this.dataSegments.Where(s => !s.Cadence.IsUnknown).Max(s => s.Cadence.PerMinute)));
+            }
+
+            if (this.dataSegments.Any(s => !s.Heartrate.IsUnknown))
+            {
+                this.LogMessage(string.Format("Average Heartrate = {0} bpm.", this.dataSegments.Where(s => !s.Heartrate.IsUnknown).Average(s => s.End.Heartrate.PerMinute)));
+                this.LogMessage(string.Format("Maximum Heartrate = {0} bpm.", this.dataSegments.Where(s => !s.Heartrate.IsUnknown).Max(s => s.End.Heartrate.PerMinute)));
+            }
+
+            if (this.dataSegments.Any(s => s.Cadence.IsUnknown))
+            {
+                this.LogMessage(string.Format("{0} segments without average cadence.", this.dataSegments.Count(s => s.Cadence.IsUnknown)));
+            }
 
             if (this.dataSegments.Any(s => s.Speed.IsUnknown))
             {
-                this.LogMessage(string.Format("  {0} segments without average speed.", this.dataSegments.Count(s => s.Speed.IsUnknown)));
+                this.LogMessage(string.Format("{0} segments without average speed.", this.dataSegments.Count(s => s.Speed.IsUnknown)));
             }
 
-            if (this.dataSegments.Any(s => s.End.Latitude.IsUnknown))
+            if (this.dataSegments.Any(s => s.Latitude.IsUnknown))
             {
-                this.LogMessage(string.Format("  {0} segments without end latitude.", this.dataSegments.Count(s => s.End.Latitude.IsUnknown)));
+                this.LogMessage(string.Format("{0} segments without latitude.", this.dataSegments.Count(s => s.Latitude.IsUnknown)));
             }
 
-            if (this.dataSegments.Any(s => s.End.Longitude.IsUnknown))
+            if (this.dataSegments.Any(s => s.Longitude.IsUnknown))
             {
-                this.LogMessage(string.Format("  {0} segments without end longitude.", this.dataSegments.Count(s => s.End.Longitude.IsUnknown)));
+                this.LogMessage(string.Format("{0} segments without longitude.", this.dataSegments.Count(s => s.Longitude.IsUnknown)));
             }
 
-            if (this.dataSegments.Any(s => s.End.Altitude.IsUnknown))
+            if (this.dataSegments.Any(s => s.Altitude.IsUnknown))
             {
-                this.LogMessage(string.Format("  {0} segments without end altitude.", this.dataSegments.Count(s => s.End.Altitude.IsUnknown)));
+                this.LogMessage(string.Format("{0} segments without altitude.", this.dataSegments.Count(s => s.Altitude.IsUnknown)));
             }
 
             if (this.dataSegments.Any(s => s.End.TotalDistance.IsUnknown))
             {
-                this.LogMessage(string.Format("  {0} segments without end total distance.", this.dataSegments.Count(s => s.End.TotalDistance.IsUnknown)));
+                this.LogMessage(string.Format("{0} segments without end total distance.", this.dataSegments.Count(s => s.End.TotalDistance.IsUnknown)));
             }
 
             this.buttonProcess.Enabled = (this.dataSegments != null) && (this.dataSegments.Count > 0);

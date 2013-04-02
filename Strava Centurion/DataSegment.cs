@@ -99,13 +99,102 @@ namespace StravaCenturion
         }
 
         /// <summary>
+        /// Gets the latitude of this point.
+        /// </summary>
+        public Angle Latitude
+        {
+            get
+            {
+                if (this.Start.Latitude.IsUnknown || this.End.Latitude.IsUnknown)
+                {
+                    return Angle.Unknown;
+                }
+
+                return (this.Start.Latitude + this.End.Latitude) / 2.0;
+            }
+        }
+
+        /// <summary>
+        /// Gets the longitude of this point.
+        /// </summary>
+        public Angle Longitude
+        {
+            get
+            {
+                if (this.Start.Longitude.IsUnknown || this.End.Longitude.IsUnknown)
+                {
+                    return Angle.Unknown;
+                }
+
+                return (this.Start.Longitude + this.End.Longitude) / 2.0;
+            }
+        }
+
+        /// <summary>
+        /// Gets the altitude of this segment.
+        /// </summary>
+        public Distance Altitude
+        {
+            get
+            {
+                if (this.Start.Altitude.IsUnknown || this.End.Altitude.IsUnknown)
+                {
+                    return Distance.Unknown;
+                }
+
+                return (this.Start.Altitude + this.End.Altitude) / 2.0;
+            }
+        }
+
+        /// <summary>
         /// Gets the average cadence along the segment.
         /// </summary>
         public Frequency Cadence
         {
             get
             {
+                if (this.Start.Cadence.IsUnknown)
+                {
+                    if (this.End.Cadence.IsUnknown)
+                    {
+                        return Frequency.Unknown;
+                    }
+
+                    return this.End.Cadence;
+                }
+
+                if (this.End.Cadence.IsUnknown)
+                {
+                    return this.Start.Cadence;
+                }
+
                 return (this.Start.Cadence + this.End.Cadence) / 2.0;
+            }
+        }
+
+        /// <summary>
+        /// Gets the average heart rate along the segment.
+        /// </summary>
+        public Frequency Heartrate
+        {
+            get
+            {
+                if (this.Start.Heartrate.IsUnknown)
+                {
+                    if (this.End.Heartrate.IsUnknown)
+                    {
+                        return Frequency.Unknown;
+                    }
+
+                    return this.End.Heartrate;
+                }
+
+                if (this.End.Heartrate.IsUnknown)
+                {
+                    return this.Start.Heartrate;
+                }
+
+                return (this.Start.Heartrate + this.End.Heartrate) / 2.0;
             }
         }
 
