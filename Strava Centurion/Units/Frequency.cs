@@ -15,9 +15,19 @@ namespace StravaCenturion.Units
     public struct Frequency
     {
         /// <summary>
-        /// Gets or sets the frequency per minute.
+        /// The frequency of zero.
         /// </summary>
-        public int PerMinute;
+        public static Frequency Zero = new Frequency(0);
+
+        /// <summary>
+        /// The unknown frequency.
+        /// </summary>
+        public static Frequency Unknown = new Frequency(int.MinValue);
+
+        /// <summary>
+        /// The frequency per minute.
+        /// </summary>
+        private int perMinute;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Frequency"/> struct.
@@ -27,28 +37,22 @@ namespace StravaCenturion.Units
         /// </param>
         public Frequency(int frequencyPerMinute)
         {
-            this.PerMinute = frequencyPerMinute;
+            this.perMinute = frequencyPerMinute;
         }
 
         /// <summary>
-        /// Gets a Frequency of zero.
+        /// Gets or sets the frequency per minute.
         /// </summary>
-        public static Frequency Zero
+        public int PerMinute
         {
             get
             {
-                return new Frequency(0);
+                return this.perMinute;
             }
-        }
 
-        /// <summary>
-        /// Gets an unknown Frequency.
-        /// </summary>
-        public static Frequency Unknown
-        {
-            get
+            set
             {
-                return new Frequency(int.MinValue);
+                this.perMinute = value;
             }
         }
 
@@ -89,7 +93,7 @@ namespace StravaCenturion.Units
         /// </summary>
         /// <param name="a">The first Frequency.</param>
         /// <param name="b">The second Frequency.</param>
-        /// <returns>The first Frequency - second Frequency.</returns>
+        /// <returns>The result of the subtraction.</returns>
         public static Frequency operator -(Frequency a, Frequency b)
         {
             return new Frequency(a.PerMinute - b.PerMinute);
