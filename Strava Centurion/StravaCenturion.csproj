@@ -63,11 +63,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GpsDeviceInfo.cs" />
     <Compile Include="IO\CsvDataSegmentWriter.cs" />
     <Compile Include="IO\IDataSegmentReader.cs" />
     <Compile Include="IO\IDataSegmentWriter.cs" />
     <Compile Include="IO\TcxDataSegmentReader.cs" />
     <Compile Include="IO\TcxDataSegmentWriter.cs" />
+    <Compile Include="TcxDeviceInfoReader.cs" />
     <Compile Include="Units\Angle.cs" />
     <Compile Include="Units\Speed.cs" />
     <Compile Include="Units\Frequency.cs" />
