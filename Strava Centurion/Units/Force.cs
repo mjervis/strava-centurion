@@ -15,9 +15,19 @@ namespace StravaCenturion.Units
     public struct Force
     {
         /// <summary>
-        /// Gets or sets the force in N.
+        /// The force of zero.
         /// </summary>
-        public double Newtons;
+        public static Force Zero = new Force(0.0);
+
+        /// <summary>
+        /// The unknown force.
+        /// </summary>
+        public static Force Unknown = new Force(double.NaN);
+
+        /// <summary>
+        /// The force in N.
+        /// </summary>
+        private double newtons;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Force"/> struct.
@@ -27,28 +37,33 @@ namespace StravaCenturion.Units
         /// </param>
         public Force(double forceInNewtons)
         {
-            this.Newtons = forceInNewtons;
+            this.newtons = forceInNewtons;
         }
 
         /// <summary>
-        /// Gets a force of zero.
+        /// Gets or sets the force in N.
         /// </summary>
-        public static Force Zero
+        public double Newtons
         {
             get
             {
-                return new Force(0);
+                return this.newtons;
+            }
+
+            set
+            {
+                this.newtons = value;
             }
         }
 
         /// <summary>
-        /// Gets an unknown force.
+        /// Gets a value indicating whether this angle is unknown.
         /// </summary>
-        public static Force Unknown
+        public bool IsUnknown
         {
             get
             {
-                return new Force(double.NaN);
+                return double.IsNaN(this.Newtons);
             }
         }
 
@@ -78,7 +93,7 @@ namespace StravaCenturion.Units
         /// </summary>
         /// <param name="a">The first force.</param>
         /// <param name="b">The second force.</param>
-        /// <returns>The first force - second force.</returns>
+        /// <returns>The result of the subtraction.</returns>
         public static Force operator -(Force a, Force b)
         {
             return new Force(a.Newtons - b.Newtons);

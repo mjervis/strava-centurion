@@ -15,9 +15,19 @@ namespace StravaCenturion.Units
     public struct Speed
     {
         /// <summary>
-        /// Gets or sets the speed in meters per second.
+        /// The speed of zero.
         /// </summary>
-        public double MetresPerSecond;
+        public static Speed Zero = new Speed(0.0);
+
+        /// <summary>
+        /// The unknown speed.
+        /// </summary>
+        public static Speed Unknown = new Speed(double.NaN);
+
+        /// <summary>
+        /// The speed in meters per second.
+        /// </summary>
+        private double metresPerSecond;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Speed"/> struct.
@@ -27,28 +37,22 @@ namespace StravaCenturion.Units
         /// </param>
         public Speed(double speedInMetresPerSecond)
         {
-            this.MetresPerSecond = speedInMetresPerSecond;
+            this.metresPerSecond = speedInMetresPerSecond;
         }
 
         /// <summary>
-        /// Gets a speed of zero.
+        /// Gets or sets the speed in meters per second.
         /// </summary>
-        public static Speed Zero
+        public double MetresPerSecond
         {
             get
             {
-                return new Speed(0);
+                return this.metresPerSecond;
             }
-        }
 
-        /// <summary>
-        /// Gets an unknown speed.
-        /// </summary>
-        public static Speed Unknown
-        {
-            get
+            set
             {
-                return new Speed(double.NaN);
+                this.metresPerSecond = value;
             }
         }
 
