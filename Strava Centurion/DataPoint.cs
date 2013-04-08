@@ -60,7 +60,7 @@ namespace StravaCenturion
         /// <summary>
         /// Gets the speed.
         /// </summary>
-        public Speed Speed { get; private set; }
+        public Speed Speed { get; set; }
 
         /// <summary>
         /// Gets the distance.

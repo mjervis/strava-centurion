@@ -79,9 +79,38 @@ namespace StravaCenturion.IO
 
             var dataPoints = this.GetDataPoints(xmlDocument, xmlNamespaceManager);
 
-            for (var loop = 1; loop < dataPoints.Count; loop++)
+            for (var speedLoop = 0; speedLoop < dataPoints.Count; speedLoop++ )
             {
-                dataSegments.Add(new DataSegment(dataPoints[loop - 1], dataPoints[loop]));
+                if (dataPoints[speedLoop].Speed.IsUnknown && (speedLoop == 0 || speedLoop == dataPoints.Count -1))
+                {
+                    dataPoints[speedLoop].Speed = new Speed(0.0);
+                }
+                else
+                {
+                    if (dataPoints[speedLoop].Speed.IsUnknown)
+                    {
+                        Distance distance = dataPoints[speedLoop].TotalDistance
+                                            - dataPoints[speedLoop - 1].TotalDistance;
+                        double time =
+                            dataPoints[speedLoop].DateTime.Subtract(dataPoints[speedLoop - 1].DateTime).TotalSeconds;
+                        var speed = distance.Metres / time;
+                        dataPoints[speedLoop].Speed = new Speed(speed);
+                    }
+                }
+                if(dataPoints[speedLoop].Speed.IsUnknown)
+                {
+                   //throw new Exception("WTF?");
+                    dataPoints[speedLoop].Speed = new Speed(0.0);
+                }
+            }
+
+            for (var loop = 4; loop < dataPoints.Count; loop++)
+            {
+               if (loop + 4 > dataPoints.Count - 1)
+               {
+                  loop = dataPoints.Count - 1;
+               }
+                dataSegments.Add(new DataSegment(dataPoints[loop - 4], dataPoints[loop + 4]));
             }
 
             return dataSegments;
