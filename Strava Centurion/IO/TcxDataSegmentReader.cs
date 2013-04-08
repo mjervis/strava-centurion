@@ -79,9 +79,11 @@ namespace StravaCenturion.IO
 
             var dataPoints = this.GetDataPoints(xmlDocument, xmlNamespaceManager);
 
-            for (var loop = 1; loop < dataPoints.Count; loop++)
+            //ToDo: make this configurable from reality tab?
+            const int chunkSize = 4;
+            for (var loop = chunkSize; loop < dataPoints.Count - chunkSize; loop++)
             {
-                dataSegments.Add(new DataSegment(dataPoints[loop - 1], dataPoints[loop]));
+                dataSegments.Add(new DataSegment(dataPoints[loop - chunkSize], dataPoints[loop + chunkSize]));
             }
 
             return dataSegments;

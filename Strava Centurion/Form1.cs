@@ -32,6 +32,8 @@ namespace StravaCenturion
         /// </summary>
         private List<DataSegment> dataSegments;
 
+        private GpsDeviceInfo _gpsDeviceInfo;
+
         /// <summary>
         /// Full, safe path to the selected TCX file.
         /// </summary>
@@ -182,6 +184,11 @@ namespace StravaCenturion
                     this.dataSegments = tcxDataSegmentReader.Read();
                 }
             }
+
+            using (var tcxDeviceSegmentReader = new TcxDeviceInfoReader(this.fullFileName))
+            {
+                _gpsDeviceInfo = tcxDeviceSegmentReader.Read();
+            }
         }
 
         /// <summary>
@@ -280,7 +287,7 @@ namespace StravaCenturion
             {
                 using (var tcxDataSegmentWriter = new TcxDataSegmentWriter(stream))
                 {
-                    tcxDataSegmentWriter.Write(this.dataSegments);
+                    tcxDataSegmentWriter.Write(this.dataSegments, _gpsDeviceInfo);
                 }
             }
 
@@ -291,7 +298,7 @@ namespace StravaCenturion
                 {
                     using (var dataSegmentWriter = new CsvDataSegmentWriter(stream))
                     {
-                        dataSegmentWriter.Write(this.dataSegments);
+                        dataSegmentWriter.Write(this.dataSegments, _gpsDeviceInfo);
                     }
                 }
             }

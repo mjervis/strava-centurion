@@ -7,6 +7,8 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System;
+
 namespace StravaCenturion.IO
 {
     using System.Collections.Generic;
@@ -35,7 +37,8 @@ namespace StravaCenturion.IO
         /// A method to write out data points.
         /// </summary>
         /// <param name="dataSegments">The data segments to write.</param>
-        public void Write(List<DataSegment> dataSegments)
+        /// <param name="gpsDeviceInfo">The GPS Device Info to write.</param>
+        public void Write(List<DataSegment> dataSegments, GpsDeviceInfo gpsDeviceInfo)
         {
             using (var streamWriter = new StreamWriter(this.stream))
             {
@@ -65,5 +68,6 @@ namespace StravaCenturion.IO
         public void Dispose()
         {
         }
+
     }
 }
