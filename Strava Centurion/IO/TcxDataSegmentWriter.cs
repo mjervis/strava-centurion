@@ -37,7 +37,8 @@ namespace StravaCenturion.IO
         /// A method to write out data points.
         /// </summary>
         /// <param name="dataSegments">The data segments to write.</param>
-        public void Write(List<DataSegment> dataSegments)
+        /// <param name="gpsDeviceInfo">The GPS device information to write.</param>
+        public void Write(List<DataSegment> dataSegments, GpsDeviceInfo gpsDeviceInfo)
         {
             using (var streamWriter = new StreamWriter(this.stream))
             {
@@ -131,14 +132,14 @@ namespace StravaCenturion.IO
                 streamWriter.WriteLine("        </Track>");
                 streamWriter.WriteLine("      </Lap>");
                 streamWriter.WriteLine("      <Creator xsi:type=\"Device_t\">");
-                streamWriter.WriteLine("        <Name>Edge 800 (Unit ID 3845823864)</Name>");
-                streamWriter.WriteLine("        <UnitId>3845823864</UnitId>");
-                streamWriter.WriteLine("        <ProductID>1169</ProductID>");
+                streamWriter.WriteLine("        <Name>{0}</Name>", gpsDeviceInfo.Name);
+                streamWriter.WriteLine("        <UnitId>{0}</UnitId>", gpsDeviceInfo.UnitId);
+                streamWriter.WriteLine("        <ProductID>{0}</ProductID>", gpsDeviceInfo.ProductId);
                 streamWriter.WriteLine("        <Version>");
-                streamWriter.WriteLine("          <VersionMajor>2</VersionMajor>");
-                streamWriter.WriteLine("          <VersionMinor>40</VersionMinor>");
-                streamWriter.WriteLine("          <BuildMajor>0</BuildMajor>");
-                streamWriter.WriteLine("          <BuildMinor>0</BuildMinor>");
+                streamWriter.WriteLine("          <VersionMajor>{0}</VersionMajor>", gpsDeviceInfo.FirmwareVersion.Major);
+                streamWriter.WriteLine("          <VersionMinor>{0}</VersionMinor>", gpsDeviceInfo.FirmwareVersion.Minor);
+                streamWriter.WriteLine("          <BuildMajor>{0}</BuildMajor>", gpsDeviceInfo.FirmwareVersion.Build);
+                streamWriter.WriteLine("          <BuildMinor>{0}</BuildMinor>", gpsDeviceInfo.FirmwareVersion.Revision);
                 streamWriter.WriteLine("        </Version>");
                 streamWriter.WriteLine("      </Creator>");
                 streamWriter.WriteLine("    </Activity>");

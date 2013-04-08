@@ -17,9 +17,19 @@ namespace StravaCenturion.Units
     public struct Angle
     {
         /// <summary>
-        /// Gets or sets the angle in radians.
+        /// An angle of zero.
         /// </summary>
-        public double Radians;
+        public static readonly Angle Zero = new Angle(0.0);
+
+        /// <summary>
+        /// An unknown angle.
+        /// </summary>
+        public static readonly Angle Unknown = new Angle(double.NaN);
+
+        /// <summary>
+        /// The angle in radians.
+        /// </summary>
+        private double radians;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Angle"/> struct.
@@ -29,28 +39,22 @@ namespace StravaCenturion.Units
         /// </param>
         public Angle(double angleInRadians)
         {
-            this.Radians = angleInRadians;
+            this.radians = angleInRadians;
         }
 
         /// <summary>
-        /// Gets an angle of zero.
+        /// Gets or sets the angle in radians.
         /// </summary>
-        public static Angle Zero
+        public double Radians
         {
             get
             {
-                return new Angle(0);
+                return this.radians;
             }
-        }
 
-        /// <summary>
-        /// Gets an unknown angle.
-        /// </summary>
-        public static Angle Unknown
-        {
-            get
+            set
             {
-                return new Angle(double.NaN);
+                this.radians = value;
             }
         }
 
@@ -72,12 +76,12 @@ namespace StravaCenturion.Units
         {
             get
             {
-                return (this.Radians * 180) / Math.PI;
+                return (this.Radians * 180.0) / Math.PI;
             }
         }
 
         /// <summary>
-        /// Creates an angle from degrees.
+        /// Creates an angle from a specified number of degrees.
         /// </summary>
         /// <param name="angleInDegrees">The angle in degrees.</param>
         /// <returns>An angle instance.</returns>
@@ -89,11 +93,11 @@ namespace StravaCenturion.Units
         /// <summary>
         /// Implicit conversion to a double.
         /// </summary>
-        /// <param name="a">The angle to convert.</param>
+        /// <param name="angle">The angle to convert.</param>
         /// <returns>The angle in radians.</returns>
-        public static implicit operator double(Angle a)
+        public static implicit operator double(Angle angle)
         {
-            return a.Radians;
+            return angle.Radians;
         }
 
         /// <summary>
@@ -112,7 +116,7 @@ namespace StravaCenturion.Units
         /// </summary>
         /// <param name="a">The first angle.</param>
         /// <param name="b">The second angle.</param>
-        /// <returns>The first angle - second angle.</returns>
+        /// <returns>The result of the subtraction.</returns>
         public static Angle operator -(Angle a, Angle b)
         {
             return new Angle(a.Radians - b.Radians);

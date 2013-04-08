@@ -15,9 +15,19 @@ namespace StravaCenturion.Units
     public struct Power
     {
         /// <summary>
-        /// Gets or sets the power in watts.
+        /// The power of zero.
         /// </summary>
-        public double Watts;
+        public static Power Zero = new Power(0.0);
+
+        /// <summary>
+        /// The unknown power.
+        /// </summary>
+        public static Power Unknown = new Power(double.NaN);
+
+        /// <summary>
+        /// The power in watts.
+        /// </summary>
+        private double watts;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Power"/> struct.
@@ -25,28 +35,22 @@ namespace StravaCenturion.Units
         /// <param name="powerInWatts">The initial power in watts.</param>
         public Power(double powerInWatts)
         {
-            this.Watts = powerInWatts;
+            this.watts = powerInWatts;
         }
 
         /// <summary>
-        /// Gets a power of zero.
+        /// Gets or sets the power in watts.
         /// </summary>
-        public static Power Zero
+        public double Watts
         {
             get
             {
-                return new Power(0);
+                return this.watts;
             }
-        }
 
-        /// <summary>
-        /// Gets an unknown power.
-        /// </summary>
-        public static Power Unknown
-        {
-            get
+            set
             {
-                return new Power(double.NaN);
+                this.watts = value;
             }
         }
 
@@ -76,7 +80,7 @@ namespace StravaCenturion.Units
         /// </summary>
         /// <param name="a">The first power.</param>
         /// <param name="b">The second power.</param>
-        /// <returns>The first power - second power.</returns>
+        /// <returns>The result of the subtraction.</returns>
         public static Power operator -(Power a, Power b)
         {
             return new Power(a.Watts - b.Watts);

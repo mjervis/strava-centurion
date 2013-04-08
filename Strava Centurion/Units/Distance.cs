@@ -15,9 +15,19 @@ namespace StravaCenturion.Units
     public struct Distance
     {
         /// <summary>
-        /// Gets or sets the distance in meters.
+        /// The distance of zero.
         /// </summary>
-        public double Metres;
+        public static Distance Zero = new Distance(0.0);
+
+        /// <summary>
+        /// Gets an unknown distance.
+        /// </summary>
+        public static Distance Unknown = new Distance(double.NaN);
+
+        /// <summary>
+        /// The distance in meters.
+        /// </summary>
+        private double metres;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Distance"/> struct.
@@ -27,28 +37,22 @@ namespace StravaCenturion.Units
         /// </param>
         public Distance(double distanceInMetres)
         {
-            this.Metres = distanceInMetres;
+            this.metres = distanceInMetres;
         }
 
         /// <summary>
-        /// Gets a distance of zero.
+        /// Gets or sets the distance in meters.
         /// </summary>
-        public static Distance Zero
+        public double Metres 
         {
             get
             {
-                return new Distance(0);
+                return this.metres;
             }
-        }
 
-        /// <summary>
-        /// Gets an unknown distance.
-        /// </summary>
-        public static Distance Unknown
-        {
-            get
+            set
             {
-                return new Distance(double.NaN);
+                this.metres = value;
             }
         }
 
@@ -70,7 +74,7 @@ namespace StravaCenturion.Units
         {
             get
             {
-                return this.Metres / 1000;
+                return this.Metres / 1000.0;
             }
         }
 
@@ -115,17 +119,6 @@ namespace StravaCenturion.Units
         public static Distance operator -(Distance a, Distance b)
         {
             return new Distance(a.Metres - b.Metres);
-        }
-
-        /// <summary>
-        /// Divides a distance by another distance.
-        /// </summary>
-        /// <param name="distance">The distance to be divided.</param>
-        /// <param name="divisor">The divisor.</param>
-        /// <returns>The result of the division.</returns>
-        public static Distance operator /(Distance distance, Distance divisor)
-        {
-            return new Distance(distance.Metres / divisor.Metres);
         }
 
         /// <summary>
