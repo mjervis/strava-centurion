@@ -21,6 +21,7 @@ namespace StravaCenturion.IO
         /// A method to write out data points.
         /// </summary>
         /// <param name="dataSegments">The data segments to write.</param>
-        void Write(List<DataSegment> dataSegments);
+        /// <param name="gpsDeviceInfo">The GPS Device Info to write.</param>
+        void Write(List<DataSegment> dataSegments, GpsDeviceInfo gpsDeviceInfo);
     }
 }
