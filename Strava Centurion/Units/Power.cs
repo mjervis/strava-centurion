@@ -17,12 +17,12 @@ namespace StravaCenturion.Units
         /// <summary>
         /// The power of zero.
         /// </summary>
-        public static Power Zero = new Power(0.0);
+        public static readonly Power Zero = new Power(0.0);
 
         /// <summary>
         /// The unknown power.
         /// </summary>
-        public static Power Unknown = new Power(double.NaN);
+        public static readonly Power Unknown = new Power(double.NaN);
 
         /// <summary>
         /// The power in watts.

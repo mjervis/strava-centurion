@@ -17,12 +17,12 @@ namespace StravaCenturion.Units
         /// <summary>
         /// The frequency of zero.
         /// </summary>
-        public static Frequency Zero = new Frequency(0);
+        public static readonly Frequency Zero = new Frequency(0);
 
         /// <summary>
         /// The unknown frequency.
         /// </summary>
-        public static Frequency Unknown = new Frequency(int.MinValue);
+        public static readonly Frequency Unknown = new Frequency(int.MinValue);
 
         /// <summary>
         /// The frequency per minute.

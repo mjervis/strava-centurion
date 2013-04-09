@@ -109,7 +109,7 @@ namespace StravaCenturion.IO
 
                     streamWriter.WriteLine("            <Extensions>");
                     streamWriter.WriteLine("              <TPX xmlns=\"http://www.garmin.com/xmlschemas/ActivityExtension/v2\">");
-                   // streamWriter.WriteLine("                <Speed>" + dataSegment.Speed.KilometresPerHour + "</Speed>");
+                    streamWriter.WriteLine("                <Speed>" + dataSegment.Speed.MetresPerSecond + "</Speed>");
                     streamWriter.WriteLine("                <Watts>" + Math.Round(dataSegment.Power.Watts,0) + "</Watts>");
                     streamWriter.WriteLine("              </TPX>");
                     streamWriter.WriteLine("            </Extensions>");

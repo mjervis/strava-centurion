@@ -69,11 +69,11 @@ namespace StravaCenturion
         /// <summary>
         /// Gets the time elapsed between the recording of the start and end points of the segment.
         /// </summary>
-        public double ElapsedTime
+        public TimeSpan ElapsedTime
         {
             get
             {
-                return this.End.DateTime.Subtract(this.Start.DateTime).TotalSeconds;
+                return new TimeSpan(this.End.DateTime.Ticks - this.Start.DateTime.Ticks);
             }
         }
 
@@ -86,12 +86,12 @@ namespace StravaCenturion
             {
                 if (this.Start.Speed.IsUnknown || this.End.Speed.IsUnknown)
                 {
-                    if (this.Length <= 0.0 || this.ElapsedTime <= 0.0)
+                    if (this.Length <= Distance.Zero || this.ElapsedTime <= TimeSpan.Zero)
                     {
-                        return new Speed(0.0);
+                        return Speed.Zero;
                     }
 
-                    return new Speed(this.Length / this.ElapsedTime);
+                    return this.Length / this.ElapsedTime;
                 }
 
                 return (this.Start.Speed + this.End.Speed) / 2.0;
@@ -201,16 +201,16 @@ namespace StravaCenturion
         /// <summary>
         /// Gets the acceleration between the start and end points of the segment in m/s/s.
         /// </summary>
-        public double Acceleration
+        public Acceleration Acceleration
         {
             get
             {
                 if (this.Start.Speed.IsUnknown || this.End.Speed.IsUnknown)
                 {
-                    throw new Exception("TODO");
+                    return Acceleration.Zero;
                 }
 
-                return (this.End.Speed.MetresPerSecond - this.Start.Speed.MetresPerSecond) / this.ElapsedTime;
+                return (this.End.Speed - this.Start.Speed) / this.ElapsedTime;
             }
         }
 
@@ -252,7 +252,7 @@ namespace StravaCenturion
         {
             get
             {
-                return new Power(Math.Max(0.0, this.TotalForce * this.Speed.MetresPerSecond));
+                return this.TotalForce * this.Speed;
             }
         }
 
@@ -265,14 +265,9 @@ namespace StravaCenturion
         {
             this.RollingResistanceForce = this.GetRollingResistanceForce(rider, reality);
             this.AccelerationForce = this.GetAccelerationForce(rider);
-            this.HillForce = this.GetHillForce(rider, reality);
+            this.HillForce = this.GetHillForce(rider);
             this.WindForce = this.GetWindForce(reality);
         }
-
-        // TODO: could some of these methods have a guard added to them...
-        // TODO:   can rolling resistance ever be a negative power?
-        // TODO:   can acceleration ever be negative power for a positive acceleration, and vice-versa
-        // TODO:   can power ever be negative for a positive gradient, and vice-versa
 
         /// <summary>
         /// Gets the rolling resistance force.
@@ -282,7 +277,7 @@ namespace StravaCenturion
         /// <returns>A force.</returns>
         private Force GetRollingResistanceForce(Rider rider, Reality reality)
         {
-            return new Force(rider.MassIncludingBike * reality.AccelerationDueToGravity * reality.CoefficientOfRollingResistance);
+            return new Force(rider.MassIncludingBike * Acceleration.Gravity * reality.CoefficientOfRollingResistance);
         }
 
         /// <summary>
@@ -299,11 +294,10 @@ namespace StravaCenturion
         /// Gets or sets the hill force.
         /// </summary>
         /// <param name="rider">The rider.</param>
-        /// <param name="reality">The reality.</param>
         /// <returns>A force.</returns>
-        private Force GetHillForce(Rider rider, Reality reality)
+        private Force GetHillForce(Rider rider)
         {
-            return new Force(rider.MassIncludingBike * reality.AccelerationDueToGravity * this.Gradient);
+            return new Force(rider.MassIncludingBike * Acceleration.Gravity * this.Gradient);
         }
 
         /// <summary>
