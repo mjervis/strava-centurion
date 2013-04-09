@@ -50,7 +50,7 @@ namespace StravaCenturion.IO
                         ",",
                         segment.Length.Metres,
                         segment.Gradient,
-                        segment.ElapsedTime,
+                        segment.ElapsedTime.TotalSeconds,
                         segment.Speed.MetresPerSecond,
                         segment.RollingResistanceForce.Newtons,
                         segment.HillForce.Newtons,

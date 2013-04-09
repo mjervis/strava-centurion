@@ -11,17 +11,14 @@ namespace StravaCenturion
     using System;
     using System.Diagnostics.CodeAnalysis;
 
+    using StravaCenturion.Units;
+
     /// <summary>
     /// Container class to hold reality settings, plus, calculate some physics.
     /// </summary>
     public class Reality
     {
         #region Physics Constants
-
-        /// <summary>
-        /// acceleration due to gravity – 9.8 m/s2
-        /// </summary>
-        public const double G = 9.80665;
 
         /// <summary>
         /// The Specific Constant for dry air.
@@ -164,17 +161,6 @@ namespace StravaCenturion
             }
         }
 
-        /// <summary>
-        /// Gets G.
-        /// </summary>
-        public double AccelerationDueToGravity
-        {
-            get
-            {
-                return G;
-            }
-        }
-
         #endregion
 
         /// <summary>
@@ -201,7 +187,7 @@ namespace StravaCenturion
         /// </returns>
         public double PressureAtAltitude(double altitude)
         {
-            double gM = this.AccelerationDueToGravity * MolecularWeightOfDryAir;
+            double gM = Acceleration.Gravity * MolecularWeightOfDryAir;
             double RL = SpecificGasConstanthWaterVapor * TemperatureLapseRate;
             double gMOverRL = gM / RL;
 

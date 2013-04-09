@@ -3,26 +3,28 @@
 //   Copyright 2013 RuPC
 // </copyright>
 // <summary>
-//   Defines the Distance type.
+//   Defines the Speed type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace StravaCenturion.Units
 {
+    using System;
+
     /// <summary>
-    /// Represents a distance.
+    /// Represents a speed.
     /// </summary>
     public struct Speed
     {
         /// <summary>
         /// The speed of zero.
         /// </summary>
-        public static Speed Zero = new Speed(0.0);
+        public static readonly Speed Zero = new Speed(0.0);
 
         /// <summary>
         /// The unknown speed.
         /// </summary>
-        public static Speed Unknown = new Speed(double.NaN);
+        public static readonly Speed Unknown = new Speed(double.NaN);
 
         /// <summary>
         /// The speed in meters per second.
@@ -81,11 +83,11 @@ namespace StravaCenturion.Units
         /// <summary>
         /// An implicit conversion to a double.
         /// </summary>
-        /// <param name="distance">The distance to convert.</param>
+        /// <param name="speed">The speed to convert.</param>
         /// <returns>The number of meters as a double.</returns>
-        public static implicit operator double(Speed distance)
+        public static implicit operator double(Speed speed)
         {
-            return distance.MetresPerSecond;
+            return speed.MetresPerSecond;
         }
 
         /// <summary>
@@ -93,7 +95,7 @@ namespace StravaCenturion.Units
         /// </summary>
         /// <param name="a">The first speed.</param>
         /// <param name="b">The second speed.</param>
-        /// <returns>The result of the speed.</returns>
+        /// <returns>The result of the addition.</returns>
         public static Speed operator +(Speed a, Speed b)
         {
             return new Speed(a.MetresPerSecond + b.MetresPerSecond);
@@ -113,12 +115,23 @@ namespace StravaCenturion.Units
         /// <summary>
         /// Divides a speed by a divisor.
         /// </summary>
-        /// <param name="distance">The speed to be divided.</param>
+        /// <param name="speed">The speed to be divided.</param>
         /// <param name="divisor">The divisor.</param>
         /// <returns>The result of the division.</returns>
-        public static Speed operator /(Speed distance, double divisor)
+        public static Speed operator /(Speed speed, double divisor)
         {
-            return new Speed(distance.MetresPerSecond / divisor);
+            return new Speed(speed.MetresPerSecond / divisor);
+        }
+
+        /// <summary>
+        /// Divides a speed by a divisor.
+        /// </summary>
+        /// <param name="speed">The speed to be divided.</param>
+        /// <param name="timeSpan">The timeSpan.</param>
+        /// <returns>The result of the division.</returns>
+        public static Acceleration operator /(Speed speed, TimeSpan timeSpan)
+        {
+            return new Acceleration(speed.MetresPerSecond / timeSpan.TotalSeconds);
         }
     }
 }
