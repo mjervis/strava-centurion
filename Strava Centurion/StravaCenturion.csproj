@@ -71,6 +71,7 @@
     <Compile Include="IO\TcxDataSegmentWriter.cs" />
     <Compile Include="TcxDeviceInfoReader.cs" />
     <Compile Include="Units\Angle.cs" />
+    <Compile Include="Units\Acceleration.cs" />
     <Compile Include="Units\Speed.cs" />
     <Compile Include="Units\Frequency.cs" />
     <Compile Include="Units\Power.cs" />

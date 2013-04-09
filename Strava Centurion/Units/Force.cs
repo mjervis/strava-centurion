@@ -17,12 +17,12 @@ namespace StravaCenturion.Units
         /// <summary>
         /// The force of zero.
         /// </summary>
-        public static Force Zero = new Force(0.0);
+        public static readonly Force Zero = new Force(0.0);
 
         /// <summary>
         /// The unknown force.
         /// </summary>
-        public static Force Unknown = new Force(double.NaN);
+        public static readonly Force Unknown = new Force(double.NaN);
 
         /// <summary>
         /// The force in N.
@@ -108,6 +108,17 @@ namespace StravaCenturion.Units
         public static Force operator /(Force force, double divisor)
         {
             return new Force(force.Newtons / divisor);
+        }
+
+        /// <summary>
+        /// Multiplies a force with a speed to obtain power.
+        /// </summary>
+        /// <param name="force">The force.</param>
+        /// <param name="speed">The speed.</param>
+        /// <returns>The result of the multiplication.</returns>
+        public static Power operator *(Force force, Speed speed)
+        {
+            return new Power(force.Newtons * speed.MetresPerSecond);
         }
     }
 }

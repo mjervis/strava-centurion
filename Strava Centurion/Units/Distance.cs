@@ -9,6 +9,8 @@
 
 namespace StravaCenturion.Units
 {
+    using System;
+
     /// <summary>
     /// Represents a distance.
     /// </summary>
@@ -17,12 +19,12 @@ namespace StravaCenturion.Units
         /// <summary>
         /// The distance of zero.
         /// </summary>
-        public static Distance Zero = new Distance(0.0);
+        public static readonly Distance Zero = new Distance(0.0);
 
         /// <summary>
         /// Gets an unknown distance.
         /// </summary>
-        public static Distance Unknown = new Distance(double.NaN);
+        public static readonly Distance Unknown = new Distance(double.NaN);
 
         /// <summary>
         /// The distance in meters.
@@ -130,6 +132,17 @@ namespace StravaCenturion.Units
         public static Distance operator /(Distance distance, double divisor)
         {
             return new Distance(distance.Metres / divisor);
+        }
+
+        /// <summary>
+        /// Divides a distance by a divisor.
+        /// </summary>
+        /// <param name="distance">The distance to be divided.</param>
+        /// <param name="divisor">The divisor.</param>
+        /// <returns>The result of the division.</returns>
+        public static Speed operator /(Distance distance, TimeSpan divisor)
+        {
+            return new Speed(distance.Metres / divisor.TotalSeconds);
         }
     }
 }
