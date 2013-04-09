@@ -79,6 +79,32 @@ namespace StravaCenturion.IO
 
             var dataPoints = this.GetDataPoints(xmlDocument, xmlNamespaceManager);
 
+            for (var speedLoop = 0; speedLoop < dataPoints.Count; speedLoop++)
+            {
+                if (dataPoints[speedLoop].Speed.IsUnknown)
+                {
+                    if (speedLoop == 0 || speedLoop == dataPoints.Count - 1)
+                    {
+                        dataPoints[speedLoop].Speed = Speed.Zero;
+                    }
+                    else
+                    {
+                        Distance distance = dataPoints[speedLoop].TotalDistance
+                                            - dataPoints[speedLoop - 1].TotalDistance;
+                        double time =
+                            dataPoints[speedLoop].DateTime.Subtract(dataPoints[speedLoop - 1].DateTime).TotalSeconds;
+                        var speed = distance.Metres / time;
+                        dataPoints[speedLoop].Speed = new Speed(speed);
+
+                        if (dataPoints[speedLoop].Speed.IsUnknown)
+                        {
+                            dataPoints[speedLoop].Speed = Speed.Zero;
+                        }
+                    }
+                }
+            }
+
+
             // TODO: We should make this configurable from reality tab - smoothness or something
             const int ChunkSize = 4;
 
