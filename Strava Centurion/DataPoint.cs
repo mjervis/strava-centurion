@@ -30,7 +30,7 @@ namespace StravaCenturion
         /// <param name="heartrateInBpm">The heart rate In beats per minute.</param>
         /// <param name="latitude">The latitude.</param>
         /// <param name="longitude">The longitude.</param>
-        public DataPoint(DateTime dateTime, Distance altitude, Frequency cadence, Distance totalDistance, Speed speed, Frequency heartrateInBpm, Angle latitude, Angle longitude)
+        public DataPoint(DateTimeOffset dateTime, Distance altitude, Frequency cadence, Distance totalDistance, Speed speed, Frequency heartrateInBpm, Angle latitude, Angle longitude)
         {
             this.DateTime = dateTime;
             this.Altitude = altitude;
@@ -70,7 +70,7 @@ namespace StravaCenturion
         /// <summary>
         /// Gets or sets the date and time that the point was recorded
         /// </summary>
-        public DateTime DateTime { get; set; }
+        public DateTimeOffset DateTime { get; set; }
 
         /// <summary>
         /// Gets or sets the longitude in degrees.
