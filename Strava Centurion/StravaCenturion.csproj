@@ -69,7 +69,7 @@
     <Compile Include="IO\IDataSegmentWriter.cs" />
     <Compile Include="IO\TcxDataSegmentReader.cs" />
     <Compile Include="IO\TcxDataSegmentWriter.cs" />
-    <Compile Include="TcxDeviceInfoReader.cs" />
+    <Compile Include="IO\TcxDeviceInfoReader.cs" />
     <Compile Include="Units\Angle.cs" />
     <Compile Include="Units\Acceleration.cs" />
     <Compile Include="Units\Speed.cs" />

@@ -231,6 +231,11 @@ namespace StravaCenturion
             if (this.dataSegments.Any(s => s.Latitude.IsUnknown))
             {
                 this.LogMessage(string.Format("{0} segments without latitude.", this.dataSegments.Count(s => s.Latitude.IsUnknown)));
+                foreach(var segment in this.dataSegments.FindAll(s => s.Latitude.IsUnknown))
+                {
+                    this.LogMessage(string.Format("Segment Start Time: {0}", segment.Start.DateTime));
+                    this.LogMessage(string.Format("Segment End Time: {0}", segment.End.DateTime));
+                }
             }
 
             if (this.dataSegments.Any(s => s.Longitude.IsUnknown))
