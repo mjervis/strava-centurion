@@ -221,7 +221,7 @@ namespace StravaCenturion.IO
         /// <param name="xmlNamespaceManager">The xml namespace manager.</param>
         /// <param name="xpath">The xpath to the node.</param>
         /// <returns>The date and time content of the node.</returns>
-        private DateTime GetDateTimeNode(XmlNode xmlNode, XmlNamespaceManager xmlNamespaceManager, string xpath)
+        private DateTimeOffset GetDateTimeNode(XmlNode xmlNode, XmlNamespaceManager xmlNamespaceManager, string xpath)
         {
             var subNode = xmlNode.SelectSingleNode(xpath, xmlNamespaceManager);
 
@@ -230,7 +230,7 @@ namespace StravaCenturion.IO
                 throw new ArgumentOutOfRangeException("xpath");
             }
 
-            return DateTime.Parse(subNode.InnerText);
+            return DateTimeOffset.Parse(subNode.InnerText);
         }
 
         /// <summary>
