@@ -125,7 +125,7 @@ namespace StravaCenturion
             double distance = this.HaversineDistanceToPoint(other);
 
             // if we've not moved then the gradient must be 0
-            if (Math.Abs(distance - 0.0) < 0.0001)
+            if ((Math.Abs(distance - 0.0) < 0.0001) || double.IsNaN(distance))
             {
                 return 0.0;
             }
@@ -141,18 +141,30 @@ namespace StravaCenturion
         /// <returns>Double, the distance in meters as the crow flies.</returns>
         public Distance HaversineDistanceToPoint(DataPoint other)
         {
-            var latitudeDelta = other.Latitude - this.Latitude;
-            var longitudeDelta = other.Longitude - this.Longitude;
+            Distance result;
 
-            var a = (Math.Sin(latitudeDelta / 2.0) * Math.Sin(latitudeDelta / 2.0))
-                    + (Math.Sin(longitudeDelta / 2.0) * Math.Sin(longitudeDelta / 2.0) * Math.Cos(this.Latitude)
-                       * Math.Cos(other.Latitude));
+            // if the other point has no lat/long value, then, we have moved 0 distance.
+            if (other.Latitude.IsUnknown || other.Longitude.IsUnknown)
+            {
+                result = Distance.Zero;
+            }
+            else
+            {
+                var latitudeDelta = other.Latitude - this.Latitude;
+                var longitudeDelta = other.Longitude - this.Longitude;
 
-            var r = this.GetRadiusOfEarth(this.Latitude);
+                var a = (Math.Sin(latitudeDelta / 2.0) * Math.Sin(latitudeDelta / 2.0))
+                        + (Math.Sin(longitudeDelta / 2.0) * Math.Sin(longitudeDelta / 2.0) * Math.Cos(this.Latitude)
+                           * Math.Cos(other.Latitude));
 
-            var c = 2.0 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1.0 - a));
+                var r = this.GetRadiusOfEarth(this.Latitude);
 
-            return new Distance(c * r);
+                var c = 2.0 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1.0 - a));
+
+                result = new Distance(c * r);
+            }
+
+            return result;
         }
 
         /// <summary>
